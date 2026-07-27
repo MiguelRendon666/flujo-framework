@@ -1,0 +1,20 @@
+{
+  "extraKnownMarketplaces": {
+    "flujo": { "source": { "source": "github", "repo": "MiguelRendon666/flujo-framework" } }
+  },
+  "enabledPlugins": {
+    "flujo-core@flujo": true,
+    "flujo-devexpress@flujo": true
+  },
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build*)",
+      "Bash(dotnet format*)",
+      "Bash(dotnet test*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./**/secrets*.json)"
+    ]
+  }
+}

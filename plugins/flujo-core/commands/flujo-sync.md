@@ -1,0 +1,21 @@
+---
+name: flujo-sync
+description: Reconcilia los archivos gestionados por el framework (wiring de hooks en settings, plantillas de gauntlet/dod, esqueletos de docs) con la version actual del plugin, sin tocar el contenido del equipo ni del usuario.
+disable-model-invocation: true
+---
+
+# /flujo-sync — sincronizar con la version del plugin
+
+Actualiza solo lo gestionado por el framework tras un update del plugin.
+
+## Pasos
+
+1. Comparar `${CLAUDE_PLUGIN_ROOT}/templates/` contra el proyecto.
+2. Reconciliar **solo archivos gestionados**: wiring de hooks y `enabledPlugins`/`extraKnownMarketplaces` en `.claude/settings.json`, estructura de carpetas `docs/`, `ci/quality-gate.yml`. Añadir lo nuevo; no pisar permisos, thresholds ni contenido del equipo.
+3. **No tocar** contenido del usuario: `CLAUDE.md`, `constitution.md`, `docs/{tutorials,how-to,reference,explanation}/`, `docs/adr/`, `specs/`.
+4. Reportar en un diff resumido que cambio y registrar la version sincronizada (sugerir un ADR si cambio un gate).
+
+## Reglas
+
+- Ante conflicto entre plantilla y contenido del equipo, gana el equipo; solo se reporta la diferencia.
+- Idempotente.

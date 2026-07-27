@@ -1,0 +1,32 @@
+{
+  "name": "flujo-core",
+  "displayName": "Flujo Core",
+  "version": "0.1.0",
+  "description": "Motor agnostico de desarrollo asistido: flujo de 9 fases, guantelete de calidad, DoD por hooks deterministas y documentacion IA-friendly.",
+  "author": { "name": "Grupo Malia Dev", "email": "mlopez@reyma.net" },
+  "license": "MIT",
+  "keywords": ["workflow", "quality-gate", "definition-of-done", "docs-as-code", "enforcement"],
+  "hooks": "./hooks/hooks.json",
+  "mcpServers": "./.mcp.json",
+  "userConfig": {
+    "db_connection": {
+      "type": "string",
+      "title": "Cadena de conexion de datos reales (solo lectura)",
+      "description": "Connection string Postgres para validar hipotesis contra datos reales. Se guarda en el keychain, no en settings.json.",
+      "sensitive": true,
+      "required": false
+    },
+    "enable_context_budget_hook": {
+      "type": "boolean",
+      "title": "Activar hook de presupuesto de contexto",
+      "description": "Reencamina lecturas/busquedas amplias en el hilo principal hacia acotar o delegar. Desactivado por defecto.",
+      "default": false
+    },
+    "enable_persona": {
+      "type": "boolean",
+      "title": "Activar persona (A-Malia)",
+      "description": "Modulo opcional de identidad del agente.",
+      "default": false
+    }
+  }
+}
