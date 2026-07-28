@@ -9,7 +9,9 @@ arguments:
     description: "salta el guantelete registrando un motivo (WIP); queda en el reporte, no silencioso"
 ---
 
-# gauntlet — guantelete de calidad
+# gauntlet — cadena de verificaciones de calidad
+
+"Gauntlet" = la cadena de verificaciones que el codigo atraviesa antes de darse por terminado (no el guante de armadura). Es el identificador tecnico del framework.
 
 Runner generico que lee `gauntlet.json` del proyecto. El motor es agnostico; los comandos (`dotnet ...`) son config del proyecto/stack.
 

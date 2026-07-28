@@ -229,6 +229,8 @@ Además, la skill `flujo` se auto-invoca en tareas no triviales; no necesitas ll
 
 ## El guantelete de calidad
 
+> **Guantelete** (calco de *gauntlet*) = la **cadena de verificaciones** que el código debe atravesar antes de darse por terminado. Se conserva `gauntlet` como identificador técnico (`gauntlet.json`, `/gauntlet`); en prosa, léelo como "cadena de verificaciones".
+
 Once etapas ordenadas por **costo/feedback** (lo barato primero, fail-fast). Definido en `gauntlet.json` de tu proyecto — el motor es agnóstico, los comandos son de tu stack:
 
 | # | Etapa | Comando (default .NET) | Tier | Bloqueo |
