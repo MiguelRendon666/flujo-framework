@@ -22,7 +22,7 @@
 - [Arquitectura](#arquitectura)
 - [Herramientas incluidas y créditos](#herramientas-incluidas-y-créditos)
 - [Escape hatches y desactivación](#escape-hatches-y-desactivación)
-- [Estado del proyecto (v0.1)](#estado-del-proyecto-v01)
+- [Estado del proyecto (v0.3.0)](#estado-del-proyecto-v030)
 - [Troubleshooting](#troubleshooting)
 
 ---
@@ -107,17 +107,26 @@ Un **PreToolUse hook** escanea cada edición de código (`.cs .razor .css .scss 
 
 Otro PreToolUse revisa cada comando Bash y niega patrones peligrosos (`rm -rf /`, `git reset --hard`, `git push --force`, `Remove-Item -Recurse -Force` sobre rutas, formateo de disco…). Si de verdad lo necesitas, lo corres tú a mano fuera del agente.
 
-### 4. Sigue el flujo de 9 fases en tareas no triviales
+### 4. Planifica y acuerda el diseño antes de codear
 
-Ante un cambio de >1 archivo o >15 líneas, una decisión de arquitectura, ambigüedad, o algo nuevo, el agente **planifica antes de tocar**: dimensiona contexto (`ctx`), cuestiona la interpretación, **reusa antes de crear** (escalera anti-sobreingeniería), y **te pregunta** en vez de asumir. En features nuevas corre `/brainstorming`: acuerda el diseño contigo **sección por sección antes de escribir código**, y el `plan.md` pasa una autorevisión (cobertura spec→tarea, sin placeholders, conflict scan) antes de implementar. Al terminar, corre auditorías independientes:
+Ante un cambio de >1 archivo o >15 líneas, una decisión de arquitectura, ambigüedad, o algo nuevo, el agente **planifica antes de tocar** (para lo trivial o informativo **no** se activa: responde directo):
 
-- **solid-guardian** — audita SOLID y arquitectura, devuelve veredicto estructurado.
+- **Dimensiona el contexto** (`ctx`) — qué archivos y líneas hacen falta y qué excluir, para gastar el mínimo.
+- **Acuerda el diseño contigo** (`brainstorming`) — preguntas socráticas de una en una, 2-3 enfoques con trade-offs, aprobación **sección por sección**. Escribe `specs/<feature>/design.md` y **no escribe código hasta que apruebes**.
+- **Propone arquitectura** (`arch`) — máximo 2 opciones, con recomendación y riesgos.
+- **Autorevisa el plan** antes de implementar — cada criterio de la spec tiene tarea (cobertura), **sin placeholders**, y un *conflict scan* que escala contradicciones como una sola pregunta.
+
+Combina dos ejes que rara vez van juntos: **completitud** (que no falte nada) y **sobriedad** (que no sobre nada — escalera anti-sobreingeniería, reusar antes de crear).
+
+### 5. Audita de forma independiente antes de dar "done"
+
+Al terminar de implementar, corren revisores que no escribieron el código:
+
+- **solid-guardian** — audita SOLID y arquitectura, veredicto estructurado.
 - **design-critic** — audita UI/UX si tocaste markup visual.
 - **fresh-verifier** (opcional) — intenta *refutar* que la tarea esté terminada, con contexto fresco.
 
-Para consultas informativas o cambios triviales, **no** se activa: responde directo.
-
-### 5. Exige spec para tocar el dominio (spec-guard), sin frenar lo demás
+### 6. Exige spec para tocar el dominio (spec-guard), sin frenar lo demás
 
 Antes de **editar** una ruta que marcaste como dominio (`flujo.json` → `specGuard.requirePaths`), un hook `PreToolUse` exige que exista una spec activa (`/spec-new`) o un modo declarado. Si no, **bloquea la edición** con instrucciones. Pero:
 
@@ -128,15 +137,15 @@ Antes de **editar** una ruta que marcaste como dominio (`flujo.json` → `specGu
 
 No adivina tu intención: la deciden **rutas configurables + un modo explícito**. El `.feature` en Gherkin queda como documentación viva y test BDD.
 
-### 6. Documenta sin inventar
+### 7. Documenta sin inventar
 
 Tiras notas informales en `docs/_inbox/` y corres `/docs-rewrite`. El agente las reorganiza (Diátaxis + ADR), detecta contradicciones/obsolescencia y **te pregunta ante la duda** — nunca rellena con suposiciones.
 
-### 7. Gasta menos tokens
+### 8. Gasta menos tokens
 
 El enforcement son scripts (≈0 tokens del modelo). Las auditorías corren en subagentes con contexto **desechable** y veredicto estructurado. La exploración va en cascada (grafo → símbolo → lectura acotada) en vez de cargar archivos enteros.
 
-### 8. Rutea el modelo por tarea
+### 9. Rutea el modelo por tarea
 
 Reserva el modelo grande para pensar: la implementación (fase 5) se delega al subagente `coder` en modelo económico, y las auditorías corren en Haiku/Sonnet — así el modelo caro no gasta tecleando boilerplate. Configurable en `flujo.json` → `models` (`plan`/`code`/`audit`/`quick`).
 
@@ -151,21 +160,27 @@ Reserva el modelo grande para pensar: la implementación (fase 5) se delega al s
 ```
 Tú:  Agrega exportación a Excel en la vista de Facturas.
 
-IA:  Es no trivial → activo flujo. Antes de tocar código:
+IA:  Es no trivial → activo flujo. /brainstorming, una pregunta a la vez:
        • ¿Exportas la vista filtrada actual o todos los registros?
-       • ¿.xlsx nativo o vía la plantilla de ReportsV2 que ya existe?
 
-Tú:  La vista filtrada, .xlsx nativo.
+Tú:  La filtrada.
 
-IA:  /spec-new facturas-export
-       creo specs/facturas-export/{spec,plan,tasks}.md + .feature
+IA:    • ¿.xlsx nativo o vía la plantilla de ReportsV2 que ya existe?
+
+Tú:  Nativo.
+
+IA:  Diseño (apruébalo por partes): reuso el ExportController y exporto el
+     CollectionSource filtrado a .xlsx nativo. → ¿OK?
+
+Tú:  OK.
+
+IA:  Escribo specs/facturas-export/design.md.
+     /spec-new facturas-export  → spec/plan/tasks + .feature
+     Autorevisión del plan: cobertura 12/12, sin placeholders, sin conflictos.
      [implemento reusando el ExportController existente]
-     solid-guardian → VEREDICTO: PASS
-     Stop hook:
-       $ dotnet build -warnaserror   ✓
-       $ dotnet format --verify      ✓
-       gauntlet OK (6 etapas)
-     Listo. Evidencia: 0 errores de build, 12/12 tareas, escenario .feature verde.
+     solid-guardian → PASS
+     Stop hook:  dotnet build -warnaserror ✓   format ✓   gauntlet OK (6)
+     Listo. Evidencia: 0 errores, 12/12 tareas, escenario .feature verde.
 ```
 
 ### Intentas (o la IA intenta) colar un comentario
@@ -314,6 +329,19 @@ Los `.feature` (Gherkin) son documentación viva: legibles y ejecutables (Reqnro
 | `.claude/rules/comentarios.md` | proyecto | regla de comentarios (path-scoped a código) |
 | `.editorconfig` / `stryker-config.json` | raíz | estilo y mutación |
 
+`flujo.json` de un vistazo (por defecto no bloquea nada hasta que listes tus rutas de dominio):
+
+```json
+{
+  "specGuard": {
+    "enabled": true,
+    "requirePaths": ["**/*Controller.cs", "**/Domain/**"],
+    "exemptModes": ["spike", "research", "bugfix", "explore", "chore"]
+  },
+  "models": { "plan": "opus", "code": "sonnet", "audit": "haiku" }
+}
+```
+
 MCP incluidos en `flujo-core`: `sequentialthinking`, `context7`, `fetch`, `codebase-memory`, `playwright`, y `postgres-real-data` (vía `db_connection`). El pack `flujo-devexpress` añade `dxdocs`.
 
 ---
@@ -348,7 +376,7 @@ tu-repo/
 
 Dos plugins en un marketplace:
 
-- **flujo-core** — el motor, agnóstico de dominio. Skills (`flujo`, `docs-rewrite`, `gauntlet`, `spec-new`, `adr-new`, `rules-comentarios`), agentes (`solid-guardian`, `design-critic`, `fresh-verifier`), hooks + scripts, y las plantillas de proyecto.
+- **flujo-core** — el motor, agnóstico de dominio. Skills (`flujo`, `brainstorming`, `ctx`, `arch`, `docs-rewrite`, `gauntlet`, `spec-new`, `adr-new`, `rules-comentarios`), agentes (`solid-guardian`, `design-critic`, `fresh-verifier`, `coder`), hooks + scripts, y las plantillas de proyecto.
 - **flujo-devexpress** — pack de stack DevExpress XAF/Blazor/XPO: skills por componente + `dxdocs`. Intercambiable por otro pack sin tocar el motor.
 
 Tres capas por **ubicación**: framework (plugin) · proyecto (`<repo>/.claude` + `docs/` + `specs/`, versionado) · desarrollador (`settings.local.json`, secretos). Enforcement determinista en hooks; guía en skills; el motor no sabe de tu stack (lee `gauntlet.json`).
@@ -456,13 +484,15 @@ Diátaxis (Daniele Procida) · ADR/MADR (Michael Nygard + proyecto MADR) · C4 m
 
 ---
 
-## Estado del proyecto (v0.1)
+## Estado del proyecto (v0.3.0)
 
 **Funciona y está probado:**
 - Hooks deterministas (comentarios, comandos destructivos) — verificados.
 - DoD por Stop hook: bloquea "done" si el guantelete falla; converge y escala a los 8 intentos.
 - Runner del guantelete por manifiesto (build y formato listos).
 - Instalable: marketplace + 2 plugins publicados y validados (`scripts/validate-plugins.ps1`).
+- Planeación: `brainstorming` (diseño aprobado por secciones), `ctx`/`arch`, y autorevisión del plan (anti-placeholder, cobertura spec→tarea, conflict scan).
+- spec-guard (bloqueo condicionado por rutas + modo, verificado por casos) y ruteo de modelos por subagente.
 
 **Cableado, aún por rodar en real:**
 - Etapas de test (unit/integración/BDD/E2E/mutación) vienen **apagadas** hasta conectar tus proyectos de test.
@@ -483,4 +513,4 @@ Diátaxis (Daniele Procida) · ADR/MADR (Michael Nygard + proyecto MADR) · C4 m
 
 ---
 
-**Flujo · v0.1** — el gate no es negociable, pero es honesto.
+**Flujo · v0.3.0** — el gate no es negociable, pero es honesto.
