@@ -391,6 +391,39 @@ No se empaquetan; el guantelete las llama por CLI si tu proyecto las tiene:
 
 Diátaxis (Daniele Procida) · ADR/MADR (Michael Nygard + proyecto MADR) · C4 model (Simon Brown) · Gherkin (Cucumber) · Living Documentation (Cyrille Martraire). Host y estándar: **Claude Code** y **MCP**, de **Anthropic**.
 
+### Enlaces (repos / sitios)
+
+**MCP incluidos**
+- sequentialthinking · postgres-real-data — https://github.com/modelcontextprotocol/servers
+- context7 — https://github.com/upstash/context7
+- fetch (`mcp-fetch-server`) — https://github.com/zcaceres/fetch-mcp
+- codebase-memory — https://github.com/DeusData/codebase-memory-mcp
+- playwright — https://github.com/microsoft/playwright-mcp
+- dxdocs · pack DevExpress — https://www.devexpress.com
+
+**Companions recomendados**
+- ponytail — https://github.com/DietrichGebert/ponytail
+- dbhub — https://github.com/bytebase/dbhub
+- Serena — https://github.com/oraios/serena
+
+**Herramientas del guantelete (.NET)**
+- .NET SDK — https://dotnet.microsoft.com
+- NetArchTest — https://github.com/BenMorris/NetArchTest
+- coverlet — https://github.com/coverlet-coverage/coverlet
+- Reqnroll — https://reqnroll.net
+- Playwright for .NET — https://playwright.dev/dotnet
+- Stryker.NET — https://stryker-mutator.io
+
+**Metodologías y host**
+- Diátaxis — https://diataxis.fr
+- ADR / MADR — https://adr.github.io/madr
+- C4 model — https://c4model.com
+- Gherkin (Cucumber) — https://cucumber.io/docs/gherkin
+- Living Documentation — https://leanpub.com/livingdocumentation
+- Claude Code — https://code.claude.com
+- Model Context Protocol — https://modelcontextprotocol.io
+- Anthropic — https://www.anthropic.com
+
 > Cada herramienta conserva su propia licencia; consulta su repositorio para los términos exactos. Flujo solo las orquesta.
 
 ---
