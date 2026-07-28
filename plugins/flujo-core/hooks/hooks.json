@@ -3,6 +3,7 @@
     {
       "matcher": "Edit|Write|MultiEdit",
       "hooks": [
+        { "type": "command", "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PLUGIN_ROOT}/scripts/spec-guard.ps1\"", "timeout": 20 },
         { "type": "command", "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PLUGIN_ROOT}/scripts/scan-comments.ps1\"", "timeout": 30 }
       ]
     },

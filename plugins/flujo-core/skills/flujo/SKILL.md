@@ -14,7 +14,7 @@ Toda tarea no trivial pasa por estas fases en orden. Cada fase tiene un dueño; 
 | 2. Buscar contexto | Cascada barata: codebase-memory (grafo) → Serena/LSP (simbolo) → Grep → Read offset+limit. Alcance incierto → delegar a `Explore` | Antes de escribir codigo |
 | 3. Cuestionar y reusar | Escalera anti-sobreingenieria (abajo) | Cualquier propuesta, ambiguedad o intencion de crear algo nuevo |
 | 4. Impacto | codebase-memory `trace_path`/`query_graph`; registrar decision via `/adr-new` | Al tocar convencion o codigo legado |
-| 5. Implementar | Skills del stack del componente tocado + escalera como lente linea a linea | Al escribir codigo |
+| 5. Implementar | Skills del stack del componente tocado + escalera como lente linea a linea; el tecleo se delega al agente `coder` (modelo economico) | Al escribir codigo |
 | 6. Auditar codigo | Agente `solid-guardian` una vez sobre el conjunto de archivos de la tarea. Excepcion: ≤1 archivo y ≤15 lineas → inline | Al terminar cambios de codigo |
 | 7. Auditar diseño/UX | Agente `design-critic` una vez sobre el diff visual. Excepcion: un atributo/clase aislado → inline | Al terminar cambios de markup visual |
 | 8. Re-chequear | Releer el diff completo contra lo evaluado en 1/3/5 — ¿sigue siendo el minimo? | Antes de reportar done, si toco >1 archivo |
@@ -43,6 +43,17 @@ Guardrails que nunca se saltan: validacion en boundaries externos, manejo de per
 ## Economia de tokens (transversal)
 
 Enforcement determinista sobre razonamiento: lo que puede hacer un script/hook no se le pide al modelo. Exploracion en cascada (Fase 2). Auditores devuelven veredicto estructurado con `tools` acotado. Nunca releer un archivo recien editado.
+
+## Ruteo de modelos (`flujo.json` > `models`)
+
+- **Planificar / arquitectura / ambiguedad** → modelo principal (grande). No se delega.
+- **Implementar (fase 5)** → subagente `coder` con `models.code` (economico). El modelo grande no teclea boilerplate.
+- **Auditar (fase 6/7)** → `solid-guardian`/`design-critic`/`fresh-verifier` con `models.audit`.
+- El modelo del hilo principal lo fijas tu con `/model`; el framework no lo cambia por mensaje (no hay hook para eso).
+
+## Gate de spec (spec-guard)
+
+Antes de editar rutas de dominio (`flujo.json` > `specGuard.requirePaths`), debe existir una spec activa (`/spec-new`) o un modo declarado (`/flujo-mode spike|research|...`). Investigar, leer o correr casos no dispara el gate. No adivina la intencion: la deciden rutas + modo.
 
 ## Definition of Done
 

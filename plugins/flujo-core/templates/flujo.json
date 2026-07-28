@@ -1,0 +1,14 @@
+{
+  "specGuard": {
+    "enabled": true,
+    "requirePaths": [],
+    "exemptPaths": ["tests/**", "docs/**", "scripts/**", "scratch/**", "specs/**", "**/*.md", "**/*.feature"],
+    "exemptModes": ["spike", "explore", "research", "bugfix", "chore"]
+  },
+  "models": {
+    "plan": "opus",
+    "code": "sonnet",
+    "audit": "haiku",
+    "quick": "haiku"
+  }
+}

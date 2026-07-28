@@ -117,9 +117,16 @@ Ante un cambio de >1 archivo o >15 líneas, una decisión de arquitectura, ambig
 
 Para consultas informativas o cambios triviales, **no** se activa: responde directo.
 
-### 5. Espera una spec para features
+### 5. Exige spec para tocar el dominio (spec-guard), sin frenar lo demás
 
-Si no existe `specs/` y le pides algo no trivial, te recordará crear la spec con `/spec-new` (Gate 1 readiness). El `.feature` en Gherkin queda como documentación viva y test BDD.
+Antes de **editar** una ruta que marcaste como dominio (`flujo.json` → `specGuard.requirePaths`), un hook `PreToolUse` exige que exista una spec activa (`/spec-new`) o un modo declarado. Si no, **bloquea la edición** con instrucciones. Pero:
+
+- **No dispara** en investigación, lectura o correr casos (no hay edición que lo gatille).
+- **No dispara** en `tests/`, `docs/`, `scripts/`, `scratch/`, `*.md`, `*.feature`.
+- Si estás explorando cómo hacer algo en dominio, declaras `/flujo-mode spike` (o `research`/`bugfix`/`explore`/`chore`) una vez y editas libre, con traza.
+- **Por defecto no bloquea nada** hasta que listes tus rutas de dominio en `flujo.json` (cero fricción sorpresa).
+
+No adivina tu intención: la deciden **rutas configurables + un modo explícito**. El `.feature` en Gherkin queda como documentación viva y test BDD.
 
 ### 6. Documenta sin inventar
 
@@ -128,6 +135,12 @@ Tiras notas informales en `docs/_inbox/` y corres `/docs-rewrite`. El agente las
 ### 7. Gasta menos tokens
 
 El enforcement son scripts (≈0 tokens del modelo). Las auditorías corren en subagentes con contexto **desechable** y veredicto estructurado. La exploración va en cascada (grafo → símbolo → lectura acotada) en vez de cargar archivos enteros.
+
+### 8. Rutea el modelo por tarea
+
+Reserva el modelo grande para pensar: la implementación (fase 5) se delega al subagente `coder` en modelo económico, y las auditorías corren en Haiku/Sonnet — así el modelo caro no gasta tecleando boilerplate. Configurable en `flujo.json` → `models` (`plan`/`code`/`audit`/`quick`).
+
+> Límite honesto: el modelo del **hilo principal** lo fijas tú con `/model`; el framework no lo cambia por mensaje (Claude Code no tiene hook para eso). Lo que sí controla es el modelo de cada subagente.
 
 ---
 
@@ -205,6 +218,7 @@ IA:  Guantelete saltado. Queda registrado con tu razón en el reporte
 | `/flujo-init` | Materializa la capa de proyecto (docs, specs, gauntlet, CI). Idempotente. |
 | `/flujo-sync` | Reconcilia lo gestionado por el framework tras un update del plugin, sin tocar tu contenido. |
 | `/spec-new <slug>` | Crea `specs/<slug>/` (spec/plan/tasks/.feature) y la marca como feature activa. |
+| `/flujo-mode <modo>` | Declara el tipo de tarea (`spike`/`explore`/`research`/`bugfix`/`chore`/`feature`/`clear`) para el spec-guard. |
 | `/adr-new <título>` | Crea un ADR con formato MADR y numeración consecutiva. |
 | `/gauntlet [tier]` | Corre el guantelete a mano (`local`/`ci`/`all`). `/gauntlet skip --reason "…"` para saltarlo con traza. |
 | `/docs-rewrite [--check]` | Reescribe `_inbox` a docs IA-friendly. `--check` = read-only para CI. |
@@ -288,6 +302,7 @@ Los `.feature` (Gherkin) son documentación viva: legibles y ejecutables (Reqnro
 
 | Archivo | Dónde | Para qué |
 |---|---|---|
+| `flujo.json` | raíz del proyecto | spec-guard (rutas que exigen spec) y ruteo de modelos por tarea |
 | `gauntlet.json` | raíz del proyecto | etapas del guantelete y toggles |
 | `dod.json` | raíz del proyecto | gates del Definition of Done y `maxBlocks` |
 | `.claude/settings.json` | proyecto (versionado) | plugins habilitados, permisos, marketplace |

@@ -1,6 +1,7 @@
 .claude/settings.local.json
 .claude/.dod-state.json
 .claude/.active-feature
+.claude/.task-mode
 bin/
 obj/
 StrykerOutput/
