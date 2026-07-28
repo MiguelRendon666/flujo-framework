@@ -1,6 +1,6 @@
 {
   "name": "flujo",
-  "owner": { "name": "Grupo Malia Dev", "email": "mlopez@reyma.net" },
+  "owner": { "name": "Miguel Rendón", "email": "mlopez@reyma.net" },
   "plugins": [
     {
       "name": "flujo-core",
@@ -8,7 +8,7 @@
       "description": "Motor agnostico: flujo de 9 fases, guantelete de calidad, Definition of Done por hooks, docs IA-friendly.",
       "version": "0.3.0",
       "category": "workflow",
-      "author": { "name": "Grupo Malia Dev" }
+      "author": { "name": "Miguel Rendón" }
     },
     {
       "name": "flujo-devexpress",
@@ -16,7 +16,7 @@
       "description": "Pack de stack DevExpress XAF/Blazor/XPO: skills por componente + ruteo de bases de datos + dxdocs.",
       "version": "0.1.0",
       "category": "stack",
-      "author": { "name": "Grupo Malia Dev" }
+      "author": { "name": "Miguel Rendón" }
     }
   ]
 }

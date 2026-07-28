@@ -3,7 +3,7 @@
   "displayName": "Flujo Core",
   "version": "0.3.0",
   "description": "Motor agnostico de desarrollo asistido: flujo de 9 fases, guantelete de calidad, DoD por hooks deterministas y documentacion IA-friendly.",
-  "author": { "name": "Grupo Malia Dev", "email": "mlopez@reyma.net" },
+  "author": { "name": "Miguel Rendón", "email": "mlopez@reyma.net" },
   "license": "MIT",
   "keywords": ["workflow", "quality-gate", "definition-of-done", "docs-as-code", "enforcement"],
   "hooks": "./hooks/hooks.json",
