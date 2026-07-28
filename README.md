@@ -1,45 +1,374 @@
-# Flujo — framework instalable de desarrollo asistido por IA
+# Flujo
 
-Pack tipo plugin para Claude Code que **obliga** a trabajar bajo gates de calidad antes de dar una tarea por terminada. Motor agnostico de dominio + pack de stack intercambiable.
+**Framework de enforcement para Claude Code.** Convierte la calidad de un *consejo que el agente puede ignorar* en una *regla que el harness impone*. Lo que debe cumplirse vive en **hooks** (scripts que ejecuta Claude Code), no en el prompt. El agente no puede reportar "listo" hasta demostrar —con evidencia— que pasó el guantelete.
 
-## Que hace
+> Casi todos los packs para Claude Code son CLAUDE.md + skills: contexto que el modelo elige seguir. Flujo es la capa determinista que faltaba.
 
-- **Flujo de 9 fases** con reto anti-sobreingenieria (skill `flujo`).
-- **Guantelete de calidad** ordenado por costo/feedback, bloqueante via hooks (build → format → comentarios → estatico → arquitectura → unit/cobertura → integration → BDD → E2E → mutation → doc-drift).
-- **Definition of Done determinista**: el Stop hook impide reportar "done" con verificaciones pendientes; converge en ≤8 intentos y escala al usuario si no.
-- **Documentacion IA-friendly**: la skill `docs-rewrite` convierte notas informales en docs estructuradas (Diataxis + ADR) sin inventar ni perder ideas.
-- **Economia de tokens**: enforcement determinista (scripts) en vez de razonamiento; auditores con contexto fresco; exploracion en cascada.
+---
 
-## Estructura
+## Tabla de contenido
 
-```
-.claude-plugin/marketplace.json     marketplace con 2 plugins
-plugins/flujo-core/                  motor agnostico (skills, agents, hooks, scripts, templates)
-plugins/flujo-devexpress/            pack de stack DevExpress XAF/Blazor/XPO
-examples/sample-app/                 proyecto minimal ya inicializado
-scripts/validate-plugins.ps1         valida manifests y estructura
-```
+- [Requisitos](#requisitos)
+- [Instalación](#instalación)
+- [Inicializar un proyecto](#inicializar-un-proyecto)
+- [Cómo se comporta el agente a partir de ahora](#cómo-se-comporta-el-agente-a-partir-de-ahora)
+- [Ejemplos de interacción](#ejemplos-de-interacción)
+- [Comandos](#comandos)
+- [El guantelete de calidad](#el-guantelete-de-calidad)
+- [Definition of Done](#definition-of-done)
+- [Documentación IA-friendly](#documentación-ia-friendly)
+- [Configuración](#configuración)
+- [Estructura que crea en tu proyecto](#estructura-que-crea-en-tu-proyecto)
+- [Arquitectura](#arquitectura)
+- [Escape hatches y desactivación](#escape-hatches-y-desactivación)
+- [Estado del proyecto (v0.1)](#estado-del-proyecto-v01)
+- [Troubleshooting](#troubleshooting)
 
-## Instalacion
+---
 
-```
+## Requisitos
+
+| Requisito | Detalle |
+|---|---|
+| Claude Code | Versión con soporte de plugins, hooks y skills (`/plugin`). |
+| PowerShell | **Windows PowerShell 5.1** basta (los hooks usan `powershell`, no `pwsh`). |
+| git | Para clonar/instalar desde el marketplace. |
+| .NET SDK | Solo para las etapas del guantelete (`dotnet build/format/test`). El motor funciona sin él; las etapas de test vienen apagadas hasta que las conectes. |
+
+---
+
+## Instalación
+
+```bash
+# 1. Añadir el marketplace
 /plugin marketplace add MiguelRendon666/flujo-framework
+
+# 2. Instalar el motor (agnóstico) y el pack de stack
 /plugin install flujo-core@flujo
-/plugin install flujo-devexpress@flujo
+/plugin install flujo-devexpress@flujo   # opcional: solo si trabajas DevExpress/XAF
+
+# 3. Recargar
+/reload-plugins
 ```
 
-En la instalacion se pediran (userConfig): connection string de datos reales (opcional, va al keychain) y toggles.
+En la instalación, `flujo-core` te pedirá configuración (`userConfig`):
 
-## Uso en un proyecto
+| Opción | Qué es | Default |
+|---|---|---|
+| `db_connection` | Connection string de datos reales (solo lectura). Se guarda en el **keychain**, no en settings.json. | vacío |
+| `enable_context_budget_hook` | Reencamina lecturas/búsquedas amplias en el hilo principal (economía de tokens). | `false` |
+| `enable_persona` | Módulo de identidad del agente. | `false` |
+
+---
+
+## Inicializar un proyecto
+
+Dentro del repo donde vas a trabajar:
+
+```bash
+/flujo-init
+```
+
+Es **idempotente** y **no pisa** lo que ya tengas. Crea la estructura, fusiona `settings.json` sin borrar tus permisos, y al terminar te imprime exactamente qué rellenar:
 
 ```
-/flujo-init          crea docs/, specs/, hooks, gauntlet.json, dod.json, CI (idempotente)
-                     -> indica que rellenar: docs/constitution.md y docs/_inbox/
-/docs-rewrite        convierte _inbox en documentacion IA-friendly
-/spec-new <feature>  crea la spec de una feature
+Flujo inicializado. Rellena, en este orden:
+  1. docs/constitution.md   <- principios del proyecto (obligatorio)
+  2. docs/_inbox/           <- tira aquí tus notas informales, sin formato
+Luego ejecuta:  /docs-rewrite
+Para una feature nueva:  /spec-new <slug>
 ```
 
-## Los dos plugins
+Si el guantelete detecta que no existen tus proyectos de test reales, deja esas etapas `enabled: false` y te avisa cuáles activar.
 
-- **flujo-core**: agnostico. El motor completo. Instalable en cualquier repo.
-- **flujo-devexpress**: pack de stack (skills por componente XAF/Blazor/XPO + dxdocs + ruteo de bases de datos). Depende del stack; intercambiable por otro pack.
+---
+
+## Cómo se comporta el agente a partir de ahora
+
+Esta es la parte que cambia tu día a día. Con Flujo instalado, el agente adquiere estas peculiaridades:
+
+### 1. No reporta "listo" hasta demostrarlo
+
+Al final de cada turno, un **Stop hook** corre el guantelete local y verifica las tareas. Si algo falla, **no deja cerrar el turno**: te devuelve la etapa rota y sigue trabajando.
+
+```json
+{ "decision": "block",
+  "reason": "DoD pendiente (intento 1/8). Resuelve y reintenta:\nGAUNTLET FAIL en etapa 'build'" }
+```
+
+Converge: solo bloquea sobre fallos **locales y accionables**; a los **8 intentos** deja de insistir y te **escala** el problema con un reporte (nunca un pase silencioso).
+
+### 2. Bloquea comentarios prohibidos antes de escribir
+
+Un **PreToolUse hook** escanea cada edición de código (`.cs .razor .css .scss .sql .ps1 .js .ts`). Si detecta un bloque multilínea, `//` consecutivos, separadores decorativos, `#region` o breadcrumbs de IA (`// Added for...`), **niega la escritura** y el agente reescribe sin el comentario. Tú no haces nada.
+
+### 3. Bloquea comandos destructivos
+
+Otro PreToolUse revisa cada comando Bash y niega patrones peligrosos (`rm -rf /`, `git reset --hard`, `git push --force`, `Remove-Item -Recurse -Force` sobre rutas, formateo de disco…). Si de verdad lo necesitas, lo corres tú a mano fuera del agente.
+
+### 4. Sigue el flujo de 9 fases en tareas no triviales
+
+Ante un cambio de >1 archivo o >15 líneas, una decisión de arquitectura, ambigüedad, o algo nuevo, el agente **planifica antes de tocar**: dimensiona contexto, cuestiona la interpretación, **reusa antes de crear** (escalera anti-sobreingeniería), y **te pregunta** en vez de asumir. Al terminar, corre auditorías independientes:
+
+- **solid-guardian** — audita SOLID y arquitectura, devuelve veredicto estructurado.
+- **design-critic** — audita UI/UX si tocaste markup visual.
+- **fresh-verifier** (opcional) — intenta *refutar* que la tarea esté terminada, con contexto fresco.
+
+Para consultas informativas o cambios triviales, **no** se activa: responde directo.
+
+### 5. Espera una spec para features
+
+Si no existe `specs/` y le pides algo no trivial, te recordará crear la spec con `/spec-new` (Gate 1 readiness). El `.feature` en Gherkin queda como documentación viva y test BDD.
+
+### 6. Documenta sin inventar
+
+Tiras notas informales en `docs/_inbox/` y corres `/docs-rewrite`. El agente las reorganiza (Diátaxis + ADR), detecta contradicciones/obsolescencia y **te pregunta ante la duda** — nunca rellena con suposiciones.
+
+### 7. Gasta menos tokens
+
+El enforcement son scripts (≈0 tokens del modelo). Las auditorías corren en subagentes con contexto **desechable** y veredicto estructurado. La exploración va en cascada (grafo → símbolo → lectura acotada) en vez de cargar archivos enteros.
+
+---
+
+## Ejemplos de interacción
+
+### Feature nueva, de principio a fin
+
+```
+Tú:  Agrega exportación a Excel en la vista de Facturas.
+
+IA:  Es no trivial → activo flujo. Antes de tocar código:
+       • ¿Exportas la vista filtrada actual o todos los registros?
+       • ¿.xlsx nativo o vía la plantilla de ReportsV2 que ya existe?
+
+Tú:  La vista filtrada, .xlsx nativo.
+
+IA:  /spec-new facturas-export
+       creo specs/facturas-export/{spec,plan,tasks}.md + .feature
+     [implemento reusando el ExportController existente]
+     solid-guardian → VEREDICTO: PASS
+     Stop hook:
+       $ dotnet build -warnaserror   ✓
+       $ dotnet format --verify      ✓
+       gauntlet OK (6 etapas)
+     Listo. Evidencia: 0 errores de build, 12/12 tareas, escenario .feature verde.
+```
+
+### Intentas (o la IA intenta) colar un comentario
+
+```
+La IA va a escribir:
+    /* Calcula el total sumando los ítems */
+    public decimal Total() => ...
+
+PreToolUse scan-comments → DENY:
+    "Política de comentarios (tolerancia cero): bloque /* */ multi-línea."
+
+La IA reescribe sin el comentario y sigue. Cero intervención tuya.
+```
+
+### Le preguntas si ya terminó
+
+```
+Tú:  ¿ya quedó?
+IA:  No según el gate. El Stop hook corrió el guantelete:
+       ✗ etapa 'format' — 3 archivos sin formatear
+     Lo arreglo y reintento (intento 2/8).
+```
+
+### Documentar tus notas
+
+```
+Tú:  (pegas ideas sueltas en docs/_inbox/estatus.md)
+Tú:  /docs-rewrite
+IA:  Procesé 1 nota → 1 how-to + 1 reference.
+     ⚠ Contradicción: escribes "el estatus se calcula en el editor",
+       pero el código lo hace en EstatusController:42.
+       ¿Cuál es la fuente de verdad? (no decido por ti)
+```
+
+### Saltarte el gate a propósito (WIP)
+
+```
+Tú:  /gauntlet skip --reason "WIP, subo a rama de trabajo"
+IA:  Guantelete saltado. Queda registrado con tu razón en el reporte
+     (visible, no silencioso).
+```
+
+---
+
+## Comandos
+
+| Comando | Qué hace |
+|---|---|
+| `/flujo-init` | Materializa la capa de proyecto (docs, specs, gauntlet, CI). Idempotente. |
+| `/flujo-sync` | Reconcilia lo gestionado por el framework tras un update del plugin, sin tocar tu contenido. |
+| `/spec-new <slug>` | Crea `specs/<slug>/` (spec/plan/tasks/.feature) y la marca como feature activa. |
+| `/adr-new <título>` | Crea un ADR con formato MADR y numeración consecutiva. |
+| `/gauntlet [tier]` | Corre el guantelete a mano (`local`/`ci`/`all`). `/gauntlet skip --reason "…"` para saltarlo con traza. |
+| `/docs-rewrite [--check]` | Reescribe `_inbox` a docs IA-friendly. `--check` = read-only para CI. |
+
+Además, la skill `flujo` se auto-invoca en tareas no triviales; no necesitas llamarla.
+
+---
+
+## El guantelete de calidad
+
+Once etapas ordenadas por **costo/feedback** (lo barato primero, fail-fast). Definido en `gauntlet.json` de tu proyecto — el motor es agnóstico, los comandos son de tu stack:
+
+| # | Etapa | Comando (default .NET) | Tier | Bloqueo |
+|---|---|---|---|---|
+| 1 | Build + warnings-as-errors | `dotnet build -warnaserror` | local + ci | duro |
+| 2 | Formato | `dotnet format --verify-no-changes` | local + ci | duro |
+| 3 | Comentarios prohibidos | script (hook) | local + ci | duro |
+| 4 | Análisis estático | `.editorconfig` severidad error | local + ci | duro |
+| 5 | Arquitectura | `dotnet test` (NetArchTest) | local + ci | duro |
+| 6 | Unit + cobertura | `dotnet test /p:CollectCoverage=true /p:Threshold=80` | local + ci | duro |
+| 7 | Integración | `dotnet test` | ci | duro |
+| 8 | BDD Gherkin | `dotnet test` (Reqnroll) | ci | duro |
+| 9 | E2E | `dotnet test` (Playwright) | ci | duro |
+| 10 | Mutation | `dotnet stryker` | nightly | informativo |
+| 11 | Doc drift + changelog | `docs-rewrite --check` | ci | blando |
+
+- **local** (Stop hook): etapas 1-6, en segundos, sin infra.
+- **ci** (`quality-gate.yml`): completo en cada push.
+- **nightly** (cron): incluye la mutación (cara).
+
+Cada etapa es una entrada del manifiesto; activar/desactivar es un `"enabled": true|false`:
+
+```json
+{ "id": "e2e", "order": 9, "cmd": "dotnet test tests/E2E", "tier": "ci", "blocking": "hard", "enabled": false }
+```
+
+Correr a mano: `powershell -File scripts/gauntlet.ps1 -Tier local`.
+
+---
+
+## Definition of Done
+
+Un **único punto de aceptación** que no crea checks nuevos: comprueba que los gates previos están en verde **con evidencia mostrada**. Definido en `dod.json`:
+
+```json
+{
+  "gates": [
+    { "id": "gauntlet",        "required": true,  "check": "gauntlet --local", "blocking": "hard" },
+    { "id": "tasks",           "required": true,  "check": "tasks-complete",   "blocking": "hard" },
+    { "id": "evidence",        "required": false, "goal": "transcript shows 'gauntlet OK' and audit verdicts" },
+    { "id": "semantic-verify", "required": false, "agent": "fresh-verifier",   "when": "nontrivial" }
+  ],
+  "maxBlocks": 8,
+  "onExhausted": "handoff-report"
+}
+```
+
+- **gauntlet** — el guantelete local pasa.
+- **tasks** — todas las tareas de la feature activa en `[x]` (lee `.claude/.active-feature`).
+- **evidence** — el transcript muestra el output real (`gauntlet OK`, veredictos), no solo la palabra "listo".
+- **semantic-verify** — `fresh-verifier` contrasta el diff contra la spec.
+
+`maxBlocks` acota la insistencia; al agotarse, escala a ti con un reporte.
+
+---
+
+## Documentación IA-friendly
+
+`/docs-rewrite` recorre tu documentación y la reorganiza siguiendo **Diátaxis** (`tutorials/`, `how-to/`, `reference/`, `explanation/`) + **ADR (MADR)** + **C4** (Mermaid). Invariantes que **nunca** rompe:
+
+- **Nunca inventa** — toda afirmación ancla al código o a tu input; lo demás se marca, no se escribe.
+- **Nunca borra sin traza** — las eliminaciones quedan como cross-ref o `DEPRECATED`.
+- **Pregunta, no adivina** — contradicciones y ambigüedades van a una tanda de preguntas.
+- **Idempotente** — sin cambios en código/docs, cero diff.
+
+Los `.feature` (Gherkin) son documentación viva: legibles y ejecutables (Reqnroll) a la vez.
+
+---
+
+## Configuración
+
+| Archivo | Dónde | Para qué |
+|---|---|---|
+| `gauntlet.json` | raíz del proyecto | etapas del guantelete y toggles |
+| `dod.json` | raíz del proyecto | gates del Definition of Done y `maxBlocks` |
+| `.claude/settings.json` | proyecto (versionado) | plugins habilitados, permisos, marketplace |
+| `.claude/settings.local.json` | proyecto (gitignored) | overrides personales, secretos |
+| `.claude/rules/comentarios.md` | proyecto | regla de comentarios (path-scoped a código) |
+| `.editorconfig` / `stryker-config.json` | raíz | estilo y mutación |
+
+MCP incluidos en `flujo-core`: `sequentialthinking`, `context7`, `fetch`, `codebase-memory`, `playwright`, y `postgres-real-data` (vía `db_connection`). El pack `flujo-devexpress` añade `dxdocs`.
+
+---
+
+## Estructura que crea en tu proyecto
+
+```
+tu-repo/
+├── CLAUDE.md                     # constitución operativa (importa docs/constitution.md)
+├── .claude/
+│   ├── settings.json             # plugins + permisos (versionado)
+│   ├── settings.local.json       # personal (gitignored)
+│   └── rules/comentarios.md      # regla path-scoped a *.cs, *.razor, ...
+├── docs/
+│   ├── constitution.md           # ← lo rellenas tú
+│   ├── ARCHITECTURE.md
+│   ├── _inbox/                    # ← tiras tus notas aquí
+│   ├── adr/                       # ADR MADR (inmutables)
+│   ├── architecture/context.mmd   # C4 (Mermaid)
+│   └── tutorials|how-to|reference|explanation/   # Diátaxis
+├── specs/<feature>/
+│   ├── spec.md · plan.md · tasks.md
+│   └── <feature>.feature          # Gherkin (doc viva + BDD)
+├── gauntlet.json · dod.json
+├── stryker-config.json · .editorconfig
+└── .github/workflows/quality-gate.yml
+```
+
+---
+
+## Arquitectura
+
+Dos plugins en un marketplace:
+
+- **flujo-core** — el motor, agnóstico de dominio. Skills (`flujo`, `docs-rewrite`, `gauntlet`, `spec-new`, `adr-new`, `rules-comentarios`), agentes (`solid-guardian`, `design-critic`, `fresh-verifier`), hooks + scripts, y las plantillas de proyecto.
+- **flujo-devexpress** — pack de stack DevExpress XAF/Blazor/XPO: skills por componente + `dxdocs`. Intercambiable por otro pack sin tocar el motor.
+
+Tres capas por **ubicación**: framework (plugin) · proyecto (`<repo>/.claude` + `docs/` + `specs/`, versionado) · desarrollador (`settings.local.json`, secretos). Enforcement determinista en hooks; guía en skills; el motor no sabe de tu stack (lee `gauntlet.json`).
+
+---
+
+## Escape hatches y desactivación
+
+- **Saltar el gate una vez, con traza:** `/gauntlet skip --reason "…"` — queda registrado, no silencioso.
+- **Apagar el hook opcional de tokens:** `enable_context_budget_hook: false`.
+- **Apagar todos los hooks (nuclear):** `"disableAllHooks": true` en `settings.json`. Desaconsejado; visible en config.
+- **Desinstalar:** `/plugin uninstall flujo-core@flujo`.
+
+---
+
+## Estado del proyecto (v0.1)
+
+**Funciona y está probado:**
+- Hooks deterministas (comentarios, comandos destructivos) — verificados.
+- DoD por Stop hook: bloquea "done" si el guantelete falla; converge y escala a los 8 intentos.
+- Runner del guantelete por manifiesto (build y formato listos).
+- Instalable: marketplace + 2 plugins publicados y validados (`scripts/validate-plugins.ps1`).
+
+**Cableado, aún por rodar en real:**
+- Etapas de test (unit/integración/BDD/E2E/mutación) vienen **apagadas** hasta conectar tus proyectos de test.
+- `docs-rewrite` está diseñado e implementado; falta rodaje sobre documentación real.
+- Pensado para **.NET** hoy; el motor es agnóstico, el stack se cambia.
+
+---
+
+## Troubleshooting
+
+| Síntoma | Causa / solución |
+|---|---|
+| Los hooks no corren | Requieren `powershell` en el PATH (Windows PS 5.1 sirve). No usan `pwsh`. |
+| El gauntlet "no corre nada" | Falta `gauntlet.json` en la raíz, o las etapas están `enabled: false`. |
+| El Stop hook nunca bloquea | Falta `dod.json`, o el gate `gauntlet` no es `required`. |
+| El agente ignoró el flujo | La tarea fue trivial/informativa (el flujo se salta a propósito). |
+| Cambié un archivo gestionado y se revirtió | Es esperado: `/flujo-sync` reconcilia lo del framework. Edita en la capa de proyecto/desarrollador. |
+
+---
+
+**Flujo · v0.1** — el gate no es negociable, pero es honesto.
