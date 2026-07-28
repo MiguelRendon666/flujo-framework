@@ -109,7 +109,7 @@ Otro PreToolUse revisa cada comando Bash y niega patrones peligrosos (`rm -rf /`
 
 ### 4. Sigue el flujo de 9 fases en tareas no triviales
 
-Ante un cambio de >1 archivo o >15 líneas, una decisión de arquitectura, ambigüedad, o algo nuevo, el agente **planifica antes de tocar**: dimensiona contexto, cuestiona la interpretación, **reusa antes de crear** (escalera anti-sobreingeniería), y **te pregunta** en vez de asumir. Al terminar, corre auditorías independientes:
+Ante un cambio de >1 archivo o >15 líneas, una decisión de arquitectura, ambigüedad, o algo nuevo, el agente **planifica antes de tocar**: dimensiona contexto (`ctx`), cuestiona la interpretación, **reusa antes de crear** (escalera anti-sobreingeniería), y **te pregunta** en vez de asumir. En features nuevas corre `/brainstorming`: acuerda el diseño contigo **sección por sección antes de escribir código**, y el `plan.md` pasa una autorevisión (cobertura spec→tarea, sin placeholders, conflict scan) antes de implementar. Al terminar, corre auditorías independientes:
 
 - **solid-guardian** — audita SOLID y arquitectura, devuelve veredicto estructurado.
 - **design-critic** — audita UI/UX si tocaste markup visual.
@@ -219,6 +219,8 @@ IA:  Guantelete saltado. Queda registrado con tu razón en el reporte
 | `/flujo-sync` | Reconcilia lo gestionado por el framework tras un update del plugin, sin tocar tu contenido. |
 | `/spec-new <slug>` | Crea `specs/<slug>/` (spec/plan/tasks/.feature) y la marca como feature activa. |
 | `/flujo-mode <modo>` | Declara el tipo de tarea (`spike`/`explore`/`research`/`bugfix`/`chore`/`feature`/`clear`) para el spec-guard. |
+| `/brainstorming` | De idea a diseño aprobado por secciones (socrático) antes de codear; escribe `specs/<feature>/design.md`. |
+| `/ctx` · `/arch` | Dimensionar contexto mínimo · consultor de arquitectura (máx 2 opciones). |
 | `/adr-new <título>` | Crea un ADR con formato MADR y numeración consecutiva. |
 | `/gauntlet [tier]` | Corre el guantelete a mano (`local`/`ci`/`all`). `/gauntlet skip --reason "…"` para saltarlo con traza. |
 | `/docs-rewrite [--check]` | Reescribe `_inbox` a docs IA-friendly. `--check` = read-only para CI. |
@@ -371,7 +373,7 @@ Flujo **orquesta** herramientas de terceros; **no reclama autoría de ninguna**.
 
 ### Skills incluidas
 
-- **Motor (`flujo-core`)** — de este framework: `flujo`, `docs-rewrite`, `gauntlet`, `spec-new`, `adr-new`, `rules-comentarios`.
+- **Motor (`flujo-core`)** — de este framework: `flujo`, `brainstorming`, `ctx`, `arch`, `docs-rewrite`, `gauntlet`, `spec-new`, `adr-new`, `rules-comentarios`.
 - **Pack de stack (`flujo-devexpress`)** — **© DevExpress, skill pack oficial** (frontmatter `author: DevExpress`, v26.1; requiere licencia DevExpress para el producto):
   - *Blazor*: `ai-chat`, `charts`, `combobox`, `gauges`, `grid`, `pivot-table`, `ribbon`, `scheduler`, `toolbar`, `treelist`.
   - *XAF*: `appearance`, `business-logic`, `business-logic-xpo`, `business-model`, `controllers`, `editors`, `filtering`, `filtering-xpo`, `performance`, `reports`, `security`, `validation`, `views`.

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0
+
+- **Planeacion al nivel de Superpowers**: nueva skill `brainstorming` (socratico 1-a-1, aprobacion de diseno por secciones ANTES de codear, escribe `specs/<feature>/design.md`), con la escalera anti-sobreingenieria incrustada — combina completitud + sobriedad.
+- Portadas al plugin las skills `ctx` (dimensionar contexto) y `arch` (max 2 opciones) — arregla las referencias colgantes del `flujo`.
+- `plan.md`: regla anti-placeholder + autorevision antes de implementar (cobertura spec->tarea, conflict scan).
+- Integracion documentada con Plan Mode nativo (brainstorming lo antecede).
+
 ## 0.2.0
 
 - **spec-guard**: hook PreToolUse que bloquea editar rutas de dominio sin spec activa o modo declarado. Determinista por rutas (`flujo.json > specGuard.requirePaths`) + modo; no dispara en investigacion/lectura/tests/docs. Default sin rutas (no molesta hasta configurarse).

@@ -20,6 +20,7 @@ Tras crear, escribe el slug en `.claude/.active-feature` para que el DoD verifiq
 
 ## Reglas
 
+- Precedido por `brainstorming`: si hay `specs/<feature>/design.md` aprobado, la spec deriva de el; si no, considera correr brainstorming antes.
 - La frontera QUE/COMO/TAREAS no se mezcla (spec no lleva codigo; plan no repite el que).
-- spec.md debe existir antes de implementar (Gate 1 readiness).
+- spec.md debe existir antes de implementar (Gate 1 readiness). El plan.md pasa su autorevision (cobertura, sin placeholders, conflict scan) antes de codear.
 - Los escenarios .feature son la fuente de verdad del comportamiento; el gauntlet los ejecuta.

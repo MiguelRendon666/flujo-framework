@@ -10,7 +10,7 @@ Toda tarea no trivial pasa por estas fases en orden. Cada fase tiene un dueño; 
 | Fase | Dueño | Dispara cuando |
 |---|---|---|
 | 0. Dimensionar | Skill `ctx` (cuanto contexto hace falta antes de buscar) | Siempre, primero |
-| 1. Planificar | Razonamiento estructurado (≥5 componentes) + reto senior (¿la solucion mas simple? ¿ya existe algo reusable?) + skill `arch` (max 2 opciones) | Peticion no trivial |
+| 1. Planificar | Skill `brainstorming` (diseno aprobado por secciones ANTES de codear) + `arch` (max 2 opciones) + razonamiento estructurado (≥5 componentes) | Peticion no trivial, algo nuevo |
 | 2. Buscar contexto | Cascada barata: codebase-memory (grafo) → Serena/LSP (simbolo) → Grep → Read offset+limit. Alcance incierto → delegar a `Explore` | Antes de escribir codigo |
 | 3. Cuestionar y reusar | Escalera anti-sobreingenieria (abajo) | Cualquier propuesta, ambiguedad o intencion de crear algo nuevo |
 | 4. Impacto | codebase-memory `trace_path`/`query_graph`; registrar decision via `/adr-new` | Al tocar convencion o codigo legado |
@@ -50,6 +50,13 @@ Enforcement determinista sobre razonamiento: lo que puede hacer un script/hook n
 - **Implementar (fase 5)** → subagente `coder` con `models.code` (economico). El modelo grande no teclea boilerplate.
 - **Auditar (fase 6/7)** → `solid-guardian`/`design-critic`/`fresh-verifier` con `models.audit`.
 - El modelo del hilo principal lo fijas tu con `/model`; el framework no lo cambia por mensaje (no hay hook para eso).
+
+## Planeacion — de idea a plan ejecutable
+
+- Feature o cambio no trivial nuevo → **`brainstorming` primero**: socratico 1-a-1, 2-3 enfoques, aprobacion del diseno **por secciones**, escribe `specs/<feature>/design.md`. No hay codigo antes de la aprobacion.
+- Antecede al **Plan Mode nativo** de Claude Code (coexisten): brainstorming acuerda el QUE/diseno; Plan Mode o `/spec-new` estructuran el COMO.
+- El `plan.md` pasa una **autorevision antes de implementar**: cobertura spec→tarea (cada criterio tiene tarea), sin placeholders/vaguedad, y **conflict scan** (contradicciones entre tareas/restricciones → una sola pregunta al humano).
+- Dos ejes juntos: completitud (nada falta) + sobriedad (nada sobra, escalera anti-sobreingenieria).
 
 ## Gate de spec (spec-guard)
 
