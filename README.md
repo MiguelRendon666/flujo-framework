@@ -20,6 +20,7 @@
 - [Configuración](#configuración)
 - [Estructura que crea en tu proyecto](#estructura-que-crea-en-tu-proyecto)
 - [Arquitectura](#arquitectura)
+- [Herramientas incluidas y créditos](#herramientas-incluidas-y-créditos)
 - [Escape hatches y desactivación](#escape-hatches-y-desactivación)
 - [Estado del proyecto (v0.1)](#estado-del-proyecto-v01)
 - [Troubleshooting](#troubleshooting)
@@ -332,6 +333,65 @@ Dos plugins en un marketplace:
 - **flujo-devexpress** — pack de stack DevExpress XAF/Blazor/XPO: skills por componente + `dxdocs`. Intercambiable por otro pack sin tocar el motor.
 
 Tres capas por **ubicación**: framework (plugin) · proyecto (`<repo>/.claude` + `docs/` + `specs/`, versionado) · desarrollador (`settings.local.json`, secretos). Enforcement determinista en hooks; guía en skills; el motor no sabe de tu stack (lee `gauntlet.json`).
+
+---
+
+## Herramientas incluidas y créditos
+
+Flujo **orquesta** herramientas de terceros; **no reclama autoría de ninguna**. Cada una pertenece a sus autores y conserva su licencia. Esto es todo con lo que cuentas al instalarlo.
+
+### MCP incluidos (arrancan al habilitar el plugin)
+
+| MCP | Qué te da | Proyecto / autor | Licencia |
+|---|---|---|---|
+| `sequentialthinking` | Razonamiento estructurado multipaso | Model Context Protocol (Anthropic) — `modelcontextprotocol/servers` | MIT |
+| `context7` | Docs actualizadas de librerías | Upstash — `upstash/context7` | MIT |
+| `fetch` (`mcp-fetch-server`) | Traer web como md / txt / json / transcript | Zach Cáceres — `zcaceres/fetch-mcp` | MIT |
+| `codebase-memory` | Grafo de código y búsqueda semántica | DeusData — `DeusData/codebase-memory-mcp` | MIT |
+| `playwright` | Navegador: screenshot, snapshot a11y, red, consola | Microsoft — `microsoft/playwright-mcp` | Apache-2.0 |
+| `postgres-real-data` | Consultar Postgres real (solo lectura) | Model Context Protocol (Anthropic) | MIT |
+| `dxdocs` *(pack DevExpress)* | Documentación oficial DevExpress | DevExpress | Términos DevExpress |
+
+### Skills incluidas
+
+- **Motor (`flujo-core`)** — de este framework: `flujo`, `docs-rewrite`, `gauntlet`, `spec-new`, `adr-new`, `rules-comentarios`.
+- **Pack de stack (`flujo-devexpress`)** — **© DevExpress, skill pack oficial** (frontmatter `author: DevExpress`, v26.1; requiere licencia DevExpress para el producto):
+  - *Blazor*: `ai-chat`, `charts`, `combobox`, `gauges`, `grid`, `pivot-table`, `ribbon`, `scheduler`, `toolbar`, `treelist`.
+  - *XAF*: `appearance`, `business-logic`, `business-logic-xpo`, `business-model`, `controllers`, `editors`, `filtering`, `filtering-xpo`, `performance`, `reports`, `security`, `validation`, `views`.
+  - `conexion-bases-datos` (ruteo del MCP de datos).
+
+### Agentes y hooks
+
+De este framework: agentes `solid-guardian`, `design-critic`, `fresh-verifier`; hooks `scan-comments`, `block-bash`, `context-budget`, `readiness`, `stop-dod`.
+
+### Companions recomendados (NO incluidos — se instalan aparte)
+
+La metodología rinde más con estos, pero el plugin **no** los empaqueta:
+
+| Tool | Para qué | Proyecto / autor | Licencia |
+|---|---|---|---|
+| ponytail | Reto "senior perezoso" anti-sobreingeniería (MCP) | DietrichGebert — `DietrichGebert/ponytail` | MIT |
+| dbhub | SQL Server / MySQL / MariaDB / SQLite (lo usa `conexion-bases-datos`) | Bytebase — `bytebase/dbhub` | ver repo |
+| Serena | Edición a nivel símbolo vía LSP (economía de tokens) | `oraios/serena` | ver repo |
+
+### Herramientas externas que invoca el guantelete (.NET)
+
+No se empaquetan; el guantelete las llama por CLI si tu proyecto las tiene:
+
+| Etapa | Herramienta | Proyecto |
+|---|---|---|
+| build / format | .NET SDK (`dotnet`) | Microsoft |
+| arquitectura | NetArchTest | Ben Morris — `BenMorris/NetArchTest` |
+| cobertura | coverlet | `coverlet-coverage/coverlet` |
+| BDD Gherkin | Reqnroll | reqnroll.net |
+| E2E | Playwright for .NET | Microsoft |
+| mutación | Stryker.NET | stryker-mutator.io |
+
+### Metodologías en las que se basa
+
+Diátaxis (Daniele Procida) · ADR/MADR (Michael Nygard + proyecto MADR) · C4 model (Simon Brown) · Gherkin (Cucumber) · Living Documentation (Cyrille Martraire). Host y estándar: **Claude Code** y **MCP**, de **Anthropic**.
+
+> Cada herramienta conserva su propia licencia; consulta su repositorio para los términos exactos. Flujo solo las orquesta.
 
 ---
 
