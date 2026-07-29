@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0
+
+- **Entrega de hooks por `settings.json` del proyecto, no por el plugin.** El dogfood en Malia demostro que los hooks declarados en el `hooks.json` de un plugin NO se ejecutan en algunos Claude Code (probado: ni spec-guard ni scan-comments disparaban, ni tras reiniciar el proceso ni en sesion top-level), mientras que los hooks de `settings.json` SI corren (file-watched). Ahora `/flujo-init` copia los scripts a `<repo>/.claude/flujo-hooks/` (versionados en git) y materializa el bloque `hooks` en `.claude/settings.json` apuntando a `${CLAUDE_PROJECT_DIR}/.claude/flujo-hooks/*.ps1`.
+- Ventaja: el enforcement **viaja en el git del proyecto** — los companeros lo obtienen al clonar, sin depender de que su Claude Code cargue hooks de plugin.
+- `stop-dod.ps1` resuelve sus scripts hermanos (`gauntlet.ps1`, `tasks-complete.ps1`) por `$PSScriptRoot` (mismo directorio), ya no por `CLAUDE_PLUGIN_ROOT`.
+- Removido el `hooks.json` del plugin y su referencia en `plugin.json` (evita doble disparo donde el plugin si cargue hooks).
+
 ## 0.3.0
 
 - **Planeacion al nivel de Superpowers**: nueva skill `brainstorming` (socratico 1-a-1, aprobacion de diseno por secciones ANTES de codear, escribe `specs/<feature>/design.md`), con la escalera anti-sobreingenieria incrustada — combina completitud + sobriedad.

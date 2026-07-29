@@ -11,13 +11,14 @@ Materializa la capa de proyecto desde `${CLAUDE_PLUGIN_ROOT}/templates/` hacia `
 ## Pasos
 
 1. **Inventariar lo existente** en el repo: `docs/`, `specs/`, `.claude/`, `CLAUDE.md`, `gauntlet.json`, `dod.json`, `.editorconfig`, CI. Nunca borrar; si algo ya existe, conservarlo.
-2. **Copiar solo lo que falte** desde `templates/`:
-   - `.claude/settings.json` (si existe, hacer merge: añadir `enabledPlugins`, `extraKnownMarketplaces` y el wiring de hooks sin pisar permisos del equipo).
-   - `.claude/rules/comentarios.md`, `CLAUDE.md`, `docs/**`, `specs/_TEMPLATE/`, `gauntlet.json`, `dod.json`, `stryker-config.json`, `.editorconfig`, `ci/quality-gate.yml` → `.github/workflows/`.
-   - `.gitignore`: añadir `.claude/settings.local.json`, `.claude/.dod-state.json`, `.claude/.active-feature` si no estan.
-3. **Reutilizar/reorganizar documentacion previa** (Responsabilidad 9): si el repo ya tiene docs sueltas, moverlas a `docs/_inbox/` para que `/docs-rewrite` las procese despues; nunca eliminar sin dejar traza.
-4. **Ajustar el manifiesto**: en `gauntlet.json` verificar que los comandos del stack (`dotnet ...`) apuntan a los proyectos de test reales del repo; si no existen, dejar la etapa `enabled: false` y avisarlo.
-5. **Imprimir la guia de llenado** (lo mas importante):
+2. **Copiar los scripts de hook**: de `${CLAUDE_PLUGIN_ROOT}/scripts/*.ps1` a `<repo>/.claude/flujo-hooks/`. Se **versionan en git** y son lo que ejecutan los hooks de `settings.json`. (Razon: la entrega de hooks via el `hooks.json` del plugin no es fiable en todos los Claude Code; via `settings.json` + scripts locales del proyecto si, porque settings es file-watched.)
+3. **Copiar solo lo que falte** desde `templates/`:
+   - `.claude/settings.json` (si existe, hacer **merge**: añadir `enabledPlugins`, `extraKnownMarketplaces` y el bloque `hooks` —que apunta a `${CLAUDE_PROJECT_DIR}/.claude/flujo-hooks/*.ps1`— sin pisar permisos del equipo).
+   - `.claude/rules/comentarios.md`, `CLAUDE.md`, `docs/**`, `specs/_TEMPLATE/`, `flujo.json`, `gauntlet.json`, `dod.json`, `stryker-config.json`, `.editorconfig`, `ci/quality-gate.yml` → `.github/workflows/`.
+   - `.gitignore`: añadir `.claude/settings.local.json`, `.claude/.dod-state.json`, `.claude/.active-feature`, `.claude/.task-mode` si no estan.
+4. **Reutilizar/reorganizar documentacion previa** (Responsabilidad 9): si el repo ya tiene docs sueltas, moverlas a `docs/_inbox/` para que `/docs-rewrite` las procese despues; nunca eliminar sin dejar traza.
+5. **Ajustar el manifiesto**: en `gauntlet.json` verificar que los comandos del stack (`dotnet ...`) apuntan a los proyectos de test reales del repo; si no existen, dejar la etapa `enabled: false` y avisarlo.
+6. **Imprimir la guia de llenado** (lo mas importante):
 
 ```
 Flujo inicializado. Rellena, en este orden:

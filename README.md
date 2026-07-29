@@ -22,7 +22,7 @@
 - [Arquitectura](#arquitectura)
 - [Herramientas incluidas y créditos](#herramientas-incluidas-y-créditos)
 - [Escape hatches y desactivación](#escape-hatches-y-desactivación)
-- [Estado del proyecto (v0.3.0)](#estado-del-proyecto-v030)
+- [Estado del proyecto (v0.4.0)](#estado-del-proyecto-v040)
 - [Troubleshooting](#troubleshooting)
 
 ---
@@ -354,7 +354,8 @@ tu-repo/
 ├── .claude/
 │   ├── settings.json             # plugins + permisos (versionado)
 │   ├── settings.local.json       # personal (gitignored)
-│   └── rules/comentarios.md      # regla path-scoped a *.cs, *.razor, ...
+│   ├── rules/comentarios.md      # regla path-scoped a *.cs, *.razor, ...
+│   └── flujo-hooks/*.ps1         # scripts de los hooks (versionados; los ejecuta settings.json)
 ├── docs/
 │   ├── constitution.md           # ← lo rellenas tú
 │   ├── ARCHITECTURE.md
@@ -484,9 +485,10 @@ Diátaxis (Daniele Procida) · ADR/MADR (Michael Nygard + proyecto MADR) · C4 m
 
 ---
 
-## Estado del proyecto (v0.3.0)
+## Estado del proyecto (v0.4.0)
 
 **Funciona y está probado:**
+- **Entrega de hooks por `settings.json`** (+ scripts en `.claude/flujo-hooks/`): verificado en Malia que **corre donde el `hooks.json` del plugin no** — es la vía fiable (file-watched) y viaja en git.
 - Hooks deterministas (comentarios, comandos destructivos) — verificados.
 - DoD por Stop hook: bloquea "done" si el guantelete falla; converge y escala a los 8 intentos.
 - Runner del guantelete por manifiesto (build y formato listos).
@@ -505,7 +507,7 @@ Diátaxis (Daniele Procida) · ADR/MADR (Michael Nygard + proyecto MADR) · C4 m
 
 | Síntoma | Causa / solución |
 |---|---|
-| Los hooks no corren | Requieren `powershell` en el PATH (Windows PS 5.1 sirve). No usan `pwsh`. |
+| Los hooks no corren | Se entregan vía `.claude/settings.json` + scripts en `.claude/flujo-hooks/` (NO vía el plugin — su `hooks.json` no siempre carga). Verifica que `/flujo-init` los creó y que `powershell` está en PATH (PS 5.1 sirve; no usan `pwsh`). |
 | El gauntlet "no corre nada" | Falta `gauntlet.json` en la raíz, o las etapas están `enabled: false`. |
 | El Stop hook nunca bloquea | Falta `dod.json`, o el gate `gauntlet` no es `required`. |
 | El agente ignoró el flujo | La tarea fue trivial/informativa (el flujo se salta a propósito). |
@@ -513,4 +515,4 @@ Diátaxis (Daniele Procida) · ADR/MADR (Michael Nygard + proyecto MADR) · C4 m
 
 ---
 
-**Flujo · v0.3.0** — el gate no es negociable, pero es honesto.
+**Flujo · v0.4.0** — el gate no es negociable, pero es honesto.

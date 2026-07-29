@@ -11,7 +11,7 @@ Actualiza solo lo gestionado por el framework tras un update del plugin.
 ## Pasos
 
 1. Comparar `${CLAUDE_PLUGIN_ROOT}/templates/` contra el proyecto.
-2. Reconciliar **solo archivos gestionados**: wiring de hooks y `enabledPlugins`/`extraKnownMarketplaces` en `.claude/settings.json`, estructura de carpetas `docs/`, `ci/quality-gate.yml`. Añadir lo nuevo; no pisar permisos, thresholds ni contenido del equipo.
+2. Reconciliar **solo archivos gestionados**: **refrescar `.claude/flujo-hooks/*.ps1`** desde `${CLAUDE_PLUGIN_ROOT}/scripts/`; el bloque `hooks` y `enabledPlugins`/`extraKnownMarketplaces` en `.claude/settings.json`; estructura de `docs/`; `ci/quality-gate.yml`. Añadir/actualizar lo gestionado; no pisar permisos, thresholds ni contenido del equipo.
 3. **No tocar** contenido del usuario: `CLAUDE.md`, `constitution.md`, `docs/{tutorials,how-to,reference,explanation}/`, `docs/adr/`, `specs/`.
 4. Reportar en un diff resumido que cambio y registrar la version sincronizada (sugerir un ADR si cambio un gate).
 

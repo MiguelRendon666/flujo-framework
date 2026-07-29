@@ -13,9 +13,8 @@ if (-not (Test-Path $dodPath)) { exit 0 }
 $dod = Get-Content $dodPath -Raw | ConvertFrom-Json
 $maxBlocks = if ($dod.maxBlocks) { [int]$dod.maxBlocks } else { 8 }
 
-$pluginRoot = $env:CLAUDE_PLUGIN_ROOT
-if (-not $pluginRoot) { $pluginRoot = Split-Path $PSScriptRoot -Parent }
-$scripts = Join-Path $pluginRoot 'scripts'
+# scripts hermanos (gauntlet, tasks-complete) viven junto a este, tanto en el plugin como en .claude/flujo-hooks/
+$scripts = $PSScriptRoot
 
 $failures = @()
 $g = & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $scripts 'gauntlet.ps1') -Tier local -ProjectDir $proj 2>&1

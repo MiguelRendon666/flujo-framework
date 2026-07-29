@@ -16,5 +16,25 @@
       "Read(./.env)",
       "Read(./**/secrets*.json)"
     ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      { "matcher": "Edit|Write|MultiEdit", "hooks": [
+        { "type": "command", "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}/.claude/flujo-hooks/spec-guard.ps1\"", "timeout": 20 },
+        { "type": "command", "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}/.claude/flujo-hooks/scan-comments.ps1\"", "timeout": 30 }
+      ]},
+      { "matcher": "Bash", "hooks": [
+        { "type": "command", "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}/.claude/flujo-hooks/block-bash.ps1\"", "timeout": 15 }
+      ]},
+      { "matcher": "Grep|Glob|Read", "hooks": [
+        { "type": "command", "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}/.claude/flujo-hooks/context-budget.ps1\"", "timeout": 15 }
+      ]}
+    ],
+    "UserPromptSubmit": [
+      { "hooks": [ { "type": "command", "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}/.claude/flujo-hooks/readiness.ps1\"", "timeout": 15 } ] }
+    ],
+    "Stop": [
+      { "hooks": [ { "type": "command", "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}/.claude/flujo-hooks/stop-dod.ps1\"", "timeout": 600 } ] }
+    ]
   }
 }
