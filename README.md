@@ -235,6 +235,7 @@ IA:  Guantelete saltado. Queda registrado con tu razón en el reporte
 | `/spec-new <slug>` | Crea `specs/<slug>/` (spec/plan/tasks/.feature) y la marca como feature activa. |
 | `/flujo-mode <modo>` | Declara el tipo de tarea (`spike`/`explore`/`research`/`bugfix`/`chore`/`feature`/`clear`) para el spec-guard. |
 | `/brainstorming` | De idea a diseño aprobado por secciones (socrático) antes de codear; escribe `specs/<feature>/design.md`. |
+| `/plan <historia>` | De una historia cruda a plan **por hitos**: investiga (código+web), impacto cross-flow, 2-3 opciones, y **cada hito pasa revisión de diseño antes de escribirse al MD**. |
 | `/ctx` · `/arch` | Dimensionar contexto mínimo · consultor de arquitectura (máx 2 opciones). |
 | `/adr-new <título>` | Crea un ADR con formato MADR y numeración consecutiva. |
 | `/gauntlet [tier]` | Corre el guantelete a mano (`local`/`ci`/`all`). `/gauntlet skip --reason "…"` para saltarlo con traza. |

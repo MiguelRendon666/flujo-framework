@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.0
+
+- **Nuevo comando `/plan <historia>`**: de una historia cruda del usuario a un plan ejecutable **por hitos**. Triage por tamano (YAGNI: trivial->directo, task->ligero, grande->deep-plan), clasifica (modify/add/new), investiga (codigo + web delegado, con research-log), verifica **impacto cross-flow**, propone 2-3 opciones (cuestiona las ideas del usuario), y construye el plan **INCREMENTALMENTE** — cada hito pasa una **revision de diseno** (checklist; escala a subagente revisor en hitos grandes) ANTES de escribirse al MD. Cada hito lleva **doc-check** como ultimo paso (docs auto-actualizadas).
+- **Nuevo template `plan.md` por hitos**: razon de ser, justificacion, flujo, research-log, impacto cross-flow, e hitos con pasos (codigo/no-codigo) + guantelete propio del hito.
+- Proximo (Paso 2): `/implement` — driver de ejecucion hito-por-hito con milestone-gauntlet scoped + re-plan por hallazgos.
+
 ## 0.4.1
 
 - **El Stop hook (DoD) ya no corre el gauntlet en turnos sin ediciones de codigo.** Nuevo hook `PostToolUse` (`mark-dirty.ps1`) que marca "se edito codigo este turno" (solo extensiones de codigo, no `.md`); `stop-dod.ps1` corre el gauntlet **solo si ese marcador esta** y lo consume. Una consulta —aunque el arbol tenga cambios pendientes— ya no dispara build. Corrige el bucle de bloqueo en consultas sobre un build roto.

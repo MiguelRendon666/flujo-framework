@@ -1,26 +1,44 @@
 # Plan — <feature>
 
-> COMO. Referencia a `spec.md`; no repite el QUE. **Regla dura: sin placeholders** — prohibido "TBD", "manejar errores apropiadamente", "similar a la tarea N", o pasos sin detalle concreto. Si no sabes el detalle, no es un plan todavia.
+> Producto de `/plan`. Referencia: `spec.md` (QUE), `design.md` (diseno aprobado). **Regla dura: sin placeholders.**
 
-## Enfoque
+## Razon de ser
+<por que existe este plan; el problema/objetivo real>
 
-<arquitectura de la solucion, la mas simple que resuelve el problema real>
+## Justificacion
+<por que este enfoque; alternativas consideradas -> ADR-NNNN>
 
-## Componentes afectados
+## Flujo (que / por que)
+<narrativa breve de que se hace y por que>
 
-<clases/modulos a tocar; reuso identificado via codebase-memory antes de crear>
+## Clasificacion
+tipo: modify-flow | add-to-flow | new   ·   complejidad: trivial | task | large
 
-## Decisiones y restricciones
+## Investigacion (research-log)
+| Pregunta | Tool/agente | Hallazgo | Como informo el plan |
+|---|---|---|---|
+|  |  |  |  |
 
-<decisiones significativas (extraer a ADR con /adr-new); constraints globales que gobiernan todas las tareas>
+## Impacto cross-flow
+| Flujo afectado | Verificado con | ¿Choca? | Mitigacion |
+|---|---|---|---|
+|  |  |  |  |
 
-## Riesgos
+## Hitos
 
-<lo que puede salir mal y como se mitiga>
+### Hito 1: <objetivo> — cubre spec [criterios]
+- Pasos:
+  - [ ] 1.1 <paso codigo>    — skill · mcp · coder
+  - [ ] 1.2 <paso no-codigo>
+  - [ ] 1.x doc-check         — revisar/actualizar docs del flujo
+- Guantelete del hito: <stages/tests scoped que lo validan>
+- Criterio de aceptacion: <verificable>
+- Revision de planeacion: PENDIENTE   (se marca PASO al agregarlo)
 
-## Autorevision del plan (antes de implementar)
-
-- [ ] **Cobertura spec -> tarea**: cada criterio de aceptacion de `spec.md` tiene al menos una tarea en `tasks.md`. Gaps marcados explicitamente.
-- [ ] **Sin placeholders** ni lenguaje vago en ninguna tarea.
-- [ ] **Conflict scan**: ninguna tarea se contradice con otra ni con las decisiones/restricciones de arriba. Si hay conflicto -> una sola pregunta al humano ("¿cual gobierna?"), no lo resuelvas por tu cuenta.
-- [ ] **Sobriedad (YAGNI)**: nada que no haga falta; reuso antes de crear.
+### Hito 2: <objetivo>
+- Pasos:
+  - [ ] 2.1 ...
+  - [ ] 2.x doc-check
+- Guantelete del hito: ...
+- Criterio de aceptacion: ...
+- Revision de planeacion: PENDIENTE
