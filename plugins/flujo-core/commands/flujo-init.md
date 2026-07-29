@@ -17,7 +17,9 @@ Materializa la capa de proyecto desde `${CLAUDE_PLUGIN_ROOT}/templates/` hacia `
    - `.claude/rules/comentarios.md`, `CLAUDE.md`, `docs/**`, `specs/_TEMPLATE/`, `flujo.json`, `gauntlet.json`, `dod.json`, `stryker-config.json`, `.editorconfig`, `ci/quality-gate.yml` → `.github/workflows/`.
    - `.gitignore`: añadir `.claude/settings.local.json`, `.claude/.dod-state.json`, `.claude/.active-feature`, `.claude/.task-mode` si no estan.
 4. **Reutilizar/reorganizar documentacion previa** (Responsabilidad 9): si el repo ya tiene docs sueltas, moverlas a `docs/_inbox/` para que `/docs-rewrite` las procese despues; nunca eliminar sin dejar traza.
-5. **Ajustar el manifiesto**: en `gauntlet.json` verificar que los comandos del stack (`dotnet ...`) apuntan a los proyectos de test reales del repo; si no existen, dejar la etapa `enabled: false` y avisarlo.
+5. **Ajustar los manifiestos**:
+   - `gauntlet.json`: verificar que los comandos del stack (`dotnet ...`) apuntan a proyectos reales; si no existen, dejar la etapa `enabled: false` y avisarlo.
+   - `flujo.json` → `specGuard.requirePaths`: **detectar la estructura de dominio del repo** (carpetas de business objects/controllers, proyecto de modulo, etc.) y **PROPONER** al usuario una lista de globs; escribirla tras su OK. No dejarla vacia en silencio; si el usuario no aprueba ninguna, avisar que spec-guard no enforzara dominio hasta configurarla.
 6. **Imprimir la guia de llenado** (lo mas importante):
 
 ```

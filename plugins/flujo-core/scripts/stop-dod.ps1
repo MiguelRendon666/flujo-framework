@@ -8,6 +8,12 @@ if (-not $proj) { $proj = (Get-Location).Path }
 # stop_hook_active evita re-entrada infinita cuando el propio hook provoco la continuacion
 if ($j -and $j.stop_hook_active -eq $true) { exit 0 }
 
+# marcador por turno: solo corre el gauntlet si ESTE turno edito codigo (lo pone mark-dirty en PostToolUse).
+# Una consulta -aunque el arbol tenga cambios pendientes- no dispara build. Se consume tras leerlo.
+$marker = Join-Path $proj '.claude/.flujo-dirty'
+if (-not (Test-Path $marker)) { exit 0 }
+Remove-Item $marker -Force -ErrorAction SilentlyContinue
+
 $dodPath = Join-Path $proj 'dod.json'
 if (-not (Test-Path $dodPath)) { exit 0 }
 $dod = Get-Content $dodPath -Raw | ConvertFrom-Json

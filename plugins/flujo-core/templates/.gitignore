@@ -2,6 +2,7 @@
 .claude/.dod-state.json
 .claude/.active-feature
 .claude/.task-mode
+.claude/.flujo-dirty
 bin/
 obj/
 StrykerOutput/

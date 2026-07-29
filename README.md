@@ -22,7 +22,7 @@
 - [Arquitectura](#arquitectura)
 - [Herramientas incluidas y créditos](#herramientas-incluidas-y-créditos)
 - [Escape hatches y desactivación](#escape-hatches-y-desactivación)
-- [Estado del proyecto (v0.4.0)](#estado-del-proyecto-v040)
+- [Estado del proyecto (v0.4.1)](#estado-del-proyecto-v040)
 - [Troubleshooting](#troubleshooting)
 
 ---
@@ -485,7 +485,7 @@ Diátaxis (Daniele Procida) · ADR/MADR (Michael Nygard + proyecto MADR) · C4 m
 
 ---
 
-## Estado del proyecto (v0.4.0)
+## Estado del proyecto (v0.4.1)
 
 **Funciona y está probado:**
 - **Entrega de hooks por `settings.json`** (+ scripts en `.claude/flujo-hooks/`): verificado en Malia que **corre donde el `hooks.json` del plugin no** — es la vía fiable (file-watched) y viaja en git.
@@ -510,9 +510,10 @@ Diátaxis (Daniele Procida) · ADR/MADR (Michael Nygard + proyecto MADR) · C4 m
 | Los hooks no corren | Se entregan vía `.claude/settings.json` + scripts en `.claude/flujo-hooks/` (NO vía el plugin — su `hooks.json` no siempre carga). Verifica que `/flujo-init` los creó y que `powershell` está en PATH (PS 5.1 sirve; no usan `pwsh`). |
 | El gauntlet "no corre nada" | Falta `gauntlet.json` en la raíz, o las etapas están `enabled: false`. |
 | El Stop hook nunca bloquea | Falta `dod.json`, o el gate `gauntlet` no es `required`. |
+| El gauntlet corre en una consulta (sin editar código) | Desde v0.4.1 no debería: `stop-dod` solo corre si el turno editó código (marcador `mark-dirty` en PostToolUse). Verifica que `/flujo-init` copió `mark-dirty.ps1` y que el hook PostToolUse está en `settings.json`. |
 | El agente ignoró el flujo | La tarea fue trivial/informativa (el flujo se salta a propósito). |
 | Cambié un archivo gestionado y se revirtió | Es esperado: `/flujo-sync` reconcilia lo del framework. Edita en la capa de proyecto/desarrollador. |
 
 ---
 
-**Flujo · v0.4.0** — el gate no es negociable, pero es honesto.
+**Flujo · v0.4.1** — el gate no es negociable, pero es honesto.

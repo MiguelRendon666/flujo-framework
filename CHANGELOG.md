@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.1
+
+- **El Stop hook (DoD) ya no corre el gauntlet en turnos sin ediciones de codigo.** Nuevo hook `PostToolUse` (`mark-dirty.ps1`) que marca "se edito codigo este turno" (solo extensiones de codigo, no `.md`); `stop-dod.ps1` corre el gauntlet **solo si ese marcador esta** y lo consume. Una consulta —aunque el arbol tenga cambios pendientes— ya no dispara build. Corrige el bucle de bloqueo en consultas sobre un build roto.
+- **`/flujo-init` PROPONE `specGuard.requirePaths`** detectando la estructura de dominio del repo, en vez de dejarlo vacio para edicion manual. El usuario aprueba/ajusta; ya no hay que tocar `flujo.json` a mano.
+
 ## 0.4.0
 
 - **Entrega de hooks por `settings.json` del proyecto, no por el plugin.** El dogfood en Malia demostro que los hooks declarados en el `hooks.json` de un plugin NO se ejecutan en algunos Claude Code (probado: ni spec-guard ni scan-comments disparaban, ni tras reiniciar el proceso ni en sesion top-level), mientras que los hooks de `settings.json` SI corren (file-watched). Ahora `/flujo-init` copia los scripts a `<repo>/.claude/flujo-hooks/` (versionados en git) y materializa el bloque `hooks` en `.claude/settings.json` apuntando a `${CLAUDE_PROJECT_DIR}/.claude/flujo-hooks/*.ps1`.
