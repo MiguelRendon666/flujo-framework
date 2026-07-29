@@ -12,6 +12,7 @@
 - [Instalación](#instalación)
 - [Inicializar un proyecto](#inicializar-un-proyecto)
 - [Cómo se comporta el agente a partir de ahora](#cómo-se-comporta-el-agente-a-partir-de-ahora)
+- [Planeación por hitos (/plan)](#planeación-por-hitos-plan)
 - [Ejemplos de interacción](#ejemplos-de-interacción)
 - [Comandos](#comandos)
 - [El guantelete de calidad](#el-guantelete-de-calidad)
@@ -22,7 +23,7 @@
 - [Arquitectura](#arquitectura)
 - [Herramientas incluidas y créditos](#herramientas-incluidas-y-créditos)
 - [Escape hatches y desactivación](#escape-hatches-y-desactivación)
-- [Estado del proyecto (v0.4.1)](#estado-del-proyecto-v040)
+- [Estado del proyecto (v0.5.0)](#estado-del-proyecto-v050)
 - [Troubleshooting](#troubleshooting)
 
 ---
@@ -152,6 +153,29 @@ Reserva el modelo grande para pensar: la implementación (fase 5) se delega al s
 > Límite honesto: el modelo del **hilo principal** lo fijas tú con `/model`; el framework no lo cambia por mensaje (Claude Code no tiene hook para eso). Lo que sí controla es el modelo de cada subagente.
 
 ---
+
+## Planeación por hitos (`/plan`)
+
+Para trabajo no trivial, `/plan <historia>` convierte una **historia cruda** del usuario (la necesidad, no una solución ya hecha) en un plan ejecutable **por hitos**. Escala al tamaño (YAGNI): trivial → directo; una task → plan ligero; grande → deep-plan.
+
+**Flujo:** triage → clasifica (modify-flow / add-to-flow / new) → investiga (código: codebase-memory / Serena / grep; web: `deep-research` / context7 / dxdocs) llenando un **research-log** → verifica **impacto cross-flow** (que no rompa otros flujos) → propone **2-3 opciones** cuestionando tus ideas (socrático + escalera Ponytail) → construye el plan **incrementalmente**.
+
+**Estructura del plan:**
+- Un plan = razón de ser + justificación + flujo (qué / por qué) + **hitos**.
+- Un **hito** = un entregable, dividido en **pasos** (código o no-código); el **último paso de cada hito es siempre doc-check** → la documentación se mantiene sola, hito a hito.
+- Cada hito pasa una **revisión de diseño ANTES de escribirse al plan** (checklist del orquestador; escala a un subagente revisor en hitos grandes). El MD se arma hito validado tras hito validado.
+
+**Tres capas de guantelete (el corazón es el de cada hito):**
+
+| Capa | Cuándo | Qué valida |
+|---|---|---|
+| plan-gauntlet (por hito) | al planear | el diseño del hito antes de entrar al MD |
+| milestone-gauntlet (por hito) | al ejecutar | el código del hito antes de avanzar |
+| DoD (general) | al cerrar | el todo + `fresh-verifier` + evidencia |
+
+**Artefactos:** `specs/<feature>/{spec.md (QUÉ), design.md (diseño aprobado), plan.md (hitos)}` + ADRs.
+
+> **Próximo (Paso 2):** `/implement` — ejecuta el plan hito por hito, corre el milestone-gauntlet de cada uno, y re-planifica ante hallazgos.
 
 ## Ejemplos de interacción
 
@@ -486,7 +510,7 @@ Diátaxis (Daniele Procida) · ADR/MADR (Michael Nygard + proyecto MADR) · C4 m
 
 ---
 
-## Estado del proyecto (v0.4.1)
+## Estado del proyecto (v0.5.0)
 
 **Funciona y está probado:**
 - **Entrega de hooks por `settings.json`** (+ scripts en `.claude/flujo-hooks/`): verificado en Malia que **corre donde el `hooks.json` del plugin no** — es la vía fiable (file-watched) y viaja en git.
@@ -498,6 +522,7 @@ Diátaxis (Daniele Procida) · ADR/MADR (Michael Nygard + proyecto MADR) · C4 m
 - spec-guard (bloqueo condicionado por rutas + modo, verificado por casos) y ruteo de modelos por subagente.
 
 **Cableado, aún por rodar en real:**
+- `/plan` (planeación por hitos) recién enviado en v0.5.0; falta dogfood. `/implement` (ejecución por hitos) es el Paso 2 pendiente.
 - Etapas de test (unit/integración/BDD/E2E/mutación) vienen **apagadas** hasta conectar tus proyectos de test.
 - `docs-rewrite` está diseñado e implementado; falta rodaje sobre documentación real.
 - Pensado para **.NET** hoy; el motor es agnóstico, el stack se cambia.
@@ -517,4 +542,4 @@ Diátaxis (Daniele Procida) · ADR/MADR (Michael Nygard + proyecto MADR) · C4 m
 
 ---
 
-**Flujo · v0.4.1** — el gate no es negociable, pero es honesto.
+**Flujo · v0.5.0** — el gate no es negociable, pero es honesto.
