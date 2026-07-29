@@ -43,7 +43,11 @@ Por cada hito, en orden:
    - [ ] incluye el paso doc-check
    - [ ] dependencias entre pasos/hitos coherentes
    - [ ] guantelete del hito definido y verificable
+   - [ ] **cada paso trae su FUENTE** (`archivo:linea` / query / doc) **y su PORQUE**
+   - [ ] **cada decision lista la opcion elegida Y las descartadas + razon**
+   - [ ] **toda afirmacion ancla a evidencia real**; si no se pudo verificar, se marca `supuesto — verificar` (nunca se da por hecho)
    Hito grande/riesgoso → escala esta revision a un **subagente revisor adversarial**.
+   > Un plan sourced + justificado (cada linea trazable a su fuente y su porque, con alternativas descartadas) es el estandar: mas efectivo que un plan que solo "se ve bien", porque es auditable y retable.
 4. Si pasa → **agregalo al `plan.md`**. Si no → corrige y re-revisa. **Nunca escribas al MD un hito no revisado.**
 Siguiente hito.
 

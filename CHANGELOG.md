@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.1
+
+- **`/plan`: sourced + justificado como INVARIANTE de la revision por hito.** Un hito no entra al `plan.md` si: (a) cada paso no trae su fuente (`archivo:linea`/query/doc) y su porque, (b) las decisiones no listan alternativas descartadas + razon, o (c) hay afirmaciones sin evidencia (se marcan `supuesto — verificar`, nunca se dan por hecho). Plan trazable y auditable garantizado, no opcional.
+- Template `plan.md`: nueva seccion **Decisiones** (elegida vs descartadas + ADR) y campos **fuente/porque** por paso y por hito.
+
 ## 0.5.0
 
 - **Nuevo comando `/plan <historia>`**: de una historia cruda del usuario a un plan ejecutable **por hitos**. Triage por tamano (YAGNI: trivial->directo, task->ligero, grande->deep-plan), clasifica (modify/add/new), investiga (codigo + web delegado, con research-log), verifica **impacto cross-flow**, propone 2-3 opciones (cuestiona las ideas del usuario), y construye el plan **INCREMENTALMENTE** — cada hito pasa una **revision de diseno** (checklist; escala a subagente revisor en hitos grandes) ANTES de escribirse al MD. Cada hito lleva **doc-check** como ultimo paso (docs auto-actualizadas).

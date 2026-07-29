@@ -24,16 +24,22 @@ tipo: modify-flow | add-to-flow | new   ·   complejidad: trivial | task | large
 |---|---|---|---|
 |  |  |  |  |
 
+## Decisiones (opcion elegida vs descartadas)
+| Decision | Elegida | Descartadas + por que | ADR |
+|---|---|---|---|
+|  |  |  |  |
+
 ## Hitos
 
 ### Hito 1: <objetivo> — cubre spec [criterios]
+- Justificacion / fuentes: <por que este hito; evidencia archivo:linea / query / doc>
 - Pasos:
-  - [ ] 1.1 <paso codigo>    — skill · mcp · coder
-  - [ ] 1.2 <paso no-codigo>
+  - [ ] 1.1 <paso codigo>    — skill · mcp · coder · fuente: <archivo:linea / doc>
+  - [ ] 1.2 <paso no-codigo> — fuente/porque: <...>
   - [ ] 1.x doc-check         — revisar/actualizar docs del flujo
 - Guantelete del hito: <stages/tests scoped que lo validan>
 - Criterio de aceptacion: <verificable>
-- Revision de planeacion: PENDIENTE   (se marca PASO al agregarlo)
+- Revision de planeacion: PENDIENTE   (se marca PASO al agregarlo; requiere fuente+porque en cada paso)
 
 ### Hito 2: <objetivo>
 - Pasos:

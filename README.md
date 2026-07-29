@@ -23,7 +23,7 @@
 - [Arquitectura](#arquitectura)
 - [Herramientas incluidas y créditos](#herramientas-incluidas-y-créditos)
 - [Escape hatches y desactivación](#escape-hatches-y-desactivación)
-- [Estado del proyecto (v0.5.0)](#estado-del-proyecto-v050)
+- [Estado del proyecto (v0.5.1)](#estado-del-proyecto-v051)
 - [Troubleshooting](#troubleshooting)
 
 ---
@@ -164,6 +164,7 @@ Para trabajo no trivial, `/plan <historia>` convierte una **historia cruda** del
 - Un plan = razón de ser + justificación + flujo (qué / por qué) + **hitos**.
 - Un **hito** = un entregable, dividido en **pasos** (código o no-código); el **último paso de cada hito es siempre doc-check** → la documentación se mantiene sola, hito a hito.
 - Cada hito pasa una **revisión de diseño ANTES de escribirse al plan** (checklist del orquestador; escala a un subagente revisor en hitos grandes). El MD se arma hito validado tras hito validado.
+- **Sourced + justificado (invariante):** cada paso trae su **fuente** (`archivo:línea` / query / doc) y su **porqué**, y cada decisión lista las **alternativas descartadas + razón**. Un plan sin evidencia no pasa la revisión — es auditable y retable, no solo "se ve bien".
 
 **Tres capas de guantelete (el corazón es el de cada hito):**
 
@@ -510,7 +511,7 @@ Diátaxis (Daniele Procida) · ADR/MADR (Michael Nygard + proyecto MADR) · C4 m
 
 ---
 
-## Estado del proyecto (v0.5.0)
+## Estado del proyecto (v0.5.1)
 
 **Funciona y está probado:**
 - **Entrega de hooks por `settings.json`** (+ scripts en `.claude/flujo-hooks/`): verificado en Malia que **corre donde el `hooks.json` del plugin no** — es la vía fiable (file-watched) y viaja en git.
@@ -542,4 +543,4 @@ Diátaxis (Daniele Procida) · ADR/MADR (Michael Nygard + proyecto MADR) · C4 m
 
 ---
 
-**Flujo · v0.5.0** — el gate no es negociable, pero es honesto.
+**Flujo · v0.5.1** — el gate no es negociable, pero es honesto.
