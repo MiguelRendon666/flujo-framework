@@ -10,7 +10,7 @@ $proj = [string]$j.cwd
 if (-not $proj) { $proj = $env:CLAUDE_PROJECT_DIR }
 if (-not $proj) { exit 0 }
 
-# --- mode-guard (v0.6.0): un modo NO-editable bloquea edicion de codigo Y de los archivos de control, sin importar spec/requirePaths ---
+# mode-guard: un modo NO-editable bloquea edicion de codigo y de archivos de control
 $nonEditing = @('plan', 'document', 'review')
 try { $c0 = Get-Content (Join-Path $proj 'flujo.json') -Raw | ConvertFrom-Json; if ($c0.specGuard.nonEditingModes) { $nonEditing = $c0.specGuard.nonEditingModes } } catch {}
 $mf = Join-Path $proj '.claude/.task-mode'
@@ -32,7 +32,6 @@ if ($nonEditing -contains $mode) {
     exit 0
   }
 }
-# --- fin mode-guard ---
 
 $cfgPath = Join-Path $proj 'flujo.json'
 if (-not (Test-Path $cfgPath)) { exit 0 }

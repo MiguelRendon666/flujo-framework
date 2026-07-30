@@ -6,21 +6,16 @@ $proj = $j.cwd
 if (-not $proj) { $proj = $env:CLAUDE_PROJECT_DIR }
 if (-not $proj) { exit 0 }
 
-# --- v0.6.0: las transiciones de modo se fijan AQUI, desde el prompt LITERAL del usuario (UserPromptSubmit).
-#     Es el unico canal para pasar a un modo editable: el modelo no puede falsificarlo (el mode-guard le
-#     bloquea editar .claude/.task-mode). Modos NO-editables (plan/document/review) hacen que spec-guard
-#     niegue toda edicion de codigo hasta que el USUARIO declare explicitamente un modo editable. ---
 $prompt = [string]$j.prompt
 $dir = Join-Path $proj '.claude'
 $modeFile = Join-Path $dir '.task-mode'
 if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
 
-# --- v0.6.2: cada turno de usuario arranca LIMPIO. El marcador .flujo-dirty (lo pone mark-dirty en
-#     PostToolUse) solo debe reflejar ediciones de codigo de ESTE turno. Si un turno anterior editó
-#     y fue CANCELADO/interrumpido, su marcador quedaba huerfano y disparaba build en el siguiente
-#     turno conversacional (Stop hook). Al limpiarlo aqui, un turno que no edita codigo nunca buildea. ---
+# limpia el marcador de codigo-editado: solo cuenta lo editado en el turno actual
 $dirtyMarker = Join-Path $dir '.flujo-dirty'
 if (Test-Path $dirtyMarker) { Remove-Item $dirtyMarker -Force -ErrorAction SilentlyContinue }
+
+# fija .task-mode desde el comando del usuario (unico canal para pasar a un modo editable)
 
 if ($prompt -match '(^|\s)/(flujo-core:)?workflow-plan(\s|$)') {
   [System.IO.File]::WriteAllText($modeFile, 'plan')
