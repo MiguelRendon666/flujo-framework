@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.0
+
+- **Nuevo: mode-guard — frontera dura entre planear y editar.** Un modo **NO-editable** (`plan`/`document`/`review`) hace que `spec-guard` **NIEGUE toda edicion de codigo** (`.cs/.razor/.css/.scss/.js/.ts/.sql/.csproj/.props/.targets`), sin importar spec activa ni `requirePaths`. Solo se permiten `.md`/`.feature`. El chequeo corre **antes** de cualquier early-exit del spec-guard, asi que aplica siempre.
+- **`/plan` es ahora estrictamente NO-editable.** El hook `readiness` fija `.claude/.task-mode=plan` al invocar `/plan`; el mode-guard bloquea codigo mientras dure. `/plan` **nunca implementa ni despacha implementacion** — su unico entregable es documentacion. Corrige el bucle donde tras un `/plan` el agente se ponia a buildear/implementar solo.
+- **Pasar de un modo NO-editable a uno editable exige autorizacion EXPLICITA del usuario** (`/implement`, o `/flujo-mode <modo-editable>`). Ninguna transicion automatica a edicion. `implement` es ahora un modo editable declarado; `research` se retiro de `exemptModes` (usa `spike`/`explore` para editar sin spec).
+- `flujo.json`: nuevo campo `specGuard.nonEditingModes` (default `["plan","document","review"]`).
+
 ## 0.5.1
 
 - **`/plan`: sourced + justificado como INVARIANTE de la revision por hito.** Un hito no entra al `plan.md` si: (a) cada paso no trae su fuente (`archivo:linea`/query/doc) y su porque, (b) las decisiones no listan alternativas descartadas + razon, o (c) hay afirmaciones sin evidencia (se marcan `supuesto — verificar`, nunca se dan por hecho). Plan trazable y auditable garantizado, no opcional.

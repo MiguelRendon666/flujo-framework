@@ -11,6 +11,14 @@ arguments:
 
 Produce `specs/<feature>/{spec.md, design.md, plan.md}`. El corazon: **cada hito pasa su revision de diseno ANTES de entrar al `plan.md`**.
 
+## FRONTERA DURA (mode-guard) — leelo primero
+`/plan` corre en **modo `plan` (NO-editable)**. El hook `readiness` fija `.claude/.task-mode=plan` y el `spec-guard` **NIEGA toda edicion de codigo** (`.cs/.razor/.css/.scss/.js/.ts/.sql/.csproj/.props/.targets`) mientras dure. **Tu unico entregable es documentacion** (`.md`/`.feature`): `spec.md`, `design.md`, `plan.md`, ADRs.
+
+- **NUNCA implementes.** No escribas codigo, no despaches subagentes de implementacion (coder/A-malIA/etc.), no corras builds "para probar".
+- **NUNCA propongas pasar a implementar por tu cuenta.** El plan termina cuando el `plan.md` esta completo. Ahi **PARAS**.
+- Implementar es exclusivo de **`/implement`** (comando aparte) y **solo el usuario** puede autorizarlo. Cambiar a un modo editable exige que el usuario lo declare EXPLICITAMENTE (`/implement` o `/flujo-mode <modo-editable>`). Nunca lo hagas tu.
+- Si crees que hace falta tocar codigo para validar algo: **dilo en el plan como paso pendiente**, no lo hagas.
+
 ## 0. Triage (escalera YAGNI)
 - **Trivial** (1 linea / cambio obvio) → NO planees; dilo y hazlo directo.
 - **Una task** (un importador, un campo) → plan ligero: 1 hito, pasos, sin research web.

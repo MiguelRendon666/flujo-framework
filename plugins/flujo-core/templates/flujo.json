@@ -3,7 +3,8 @@
     "enabled": true,
     "requirePaths": [],
     "exemptPaths": ["tests/**", "docs/**", "scripts/**", "scratch/**", "specs/**", "**/*.md", "**/*.feature"],
-    "exemptModes": ["spike", "explore", "research", "bugfix", "chore"]
+    "exemptModes": ["spike", "explore", "bugfix", "chore", "implement"],
+    "nonEditingModes": ["plan", "document", "review"]
   },
   "models": {
     "plan": "opus",
