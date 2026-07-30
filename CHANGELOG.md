@@ -1,10 +1,14 @@
 # Changelog
 
+## 0.6.2
+
+- **FIX del bug real: el Stop/DoD buildeaba tras CANCELAR una orden.** El marcador `.flujo-dirty` (lo pone `mark-dirty` en PostToolUse cuando se edita codigo) se consumia recien en el siguiente `Stop`. Si un turno editaba codigo y era **interrumpido/cancelado**, su marcador quedaba huerfano y disparaba el guantelete (build) en el **siguiente turno conversacional** — aunque ese turno no tocara nada. Fix: `readiness` (UserPromptSubmit) **limpia `.flujo-dirty` al inicio de cada turno**, asi el marcador solo refleja ediciones de ESE turno. Reproducido y verificado (turno conversacional con marcador huerfano → NO buildea; turno que si edita → si buildea).
+- **Revertido `-p:NuGetAudit=false`** (introducido por error en 0.6.1): enmascaraba vulnerabilidades reales de dependencias; el gate se mantiene honesto. El problema nunca fue el contenido del build sino QUE corriera en el momento equivocado (arreglado arriba).
+
 ## 0.6.1
 
 - **RENOMBRADO `/plan` → `/workflow-plan`.** `/plan` colisiona con el **Plan Mode NATIVO de Claude Code**: al escribir `/plan`, Claude Code entraba a su Plan Mode integrado (no nuestro comando, que tiene `disable-model-invocation`), y su aprobacion de ExitPlanMode ("you can now start coding") se leia como autorizacion para implementar — puenteando toda la gobernanza flujo. El comando REAL es ahora `/workflow-plan`. Actualizado en comando, `readiness`, `/flujo-mode`, README, template y CHANGELOG.
 - **Red de seguridad:** `readiness` ahora fija `.task-mode=plan` tanto en `/workflow-plan` como en el `/plan` nativo, para que ni el Plan Mode nativo pueda auto-autorizar edicion de codigo (el mode-guard sigue bloqueando hasta que el usuario declare un modo editable).
-- **Build local del guantelete resiliente a vulnerabilidades NuGet preexistentes.** La etapa `build` pasa a `dotnet build -warnaserror -p:NuGetAudit=false`: los avisos de seguridad de paquetes (`NU1900/1902/1903`, p.ej. MessagePack/System.Security.Cryptography.Xml) ya NO tumban el DoD en bucle — no son del cambio del desarrollador. Se conserva `-warnaserror` para warnings reales del compilador. (Nota: `NU1301` 401 de un feed privado es auth del entorno, no lo cubre el framework.)
 
 ## 0.6.0
 

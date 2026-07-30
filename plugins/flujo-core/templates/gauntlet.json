@@ -1,6 +1,6 @@
 {
   "stages": [
-    { "id": "build", "order": 1, "cmd": "dotnet build -warnaserror -p:NuGetAudit=false", "tier": "local", "blocking": "hard" },
+    { "id": "build", "order": 1, "cmd": "dotnet build -warnaserror", "tier": "local", "blocking": "hard" },
     { "id": "format", "order": 2, "cmd": "dotnet format --verify-no-changes", "tier": "local", "blocking": "hard" },
     { "id": "arch", "order": 5, "cmd": "dotnet test tests/Arch", "tier": "local", "blocking": "hard", "enabled": false },
     { "id": "unit", "order": 6, "cmd": "dotnet test tests/Unit /p:CollectCoverage=true /p:Threshold=80", "tier": "local", "blocking": "hard", "enabled": false },
