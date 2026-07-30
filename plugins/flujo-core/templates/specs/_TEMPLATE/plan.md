@@ -1,6 +1,6 @@
 # Plan — <feature>
 
-> Producto de `/plan`. Referencia: `spec.md` (QUE), `design.md` (diseno aprobado). **Regla dura: sin placeholders.**
+> Producto de `/workflow-plan`. Referencia: `spec.md` (QUE), `design.md` (diseno aprobado). **Regla dura: sin placeholders.**
 
 ## Razon de ser
 <por que existe este plan; el problema/objetivo real>

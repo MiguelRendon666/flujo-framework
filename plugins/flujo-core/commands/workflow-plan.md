@@ -1,18 +1,20 @@
 ---
-name: plan
-description: De una historia cruda del usuario a un plan ejecutable por hitos. Investiga (codigo + web), verifica impacto cross-flow, propone 2-3 opciones y construye el plan INCREMENTALMENTE: cada hito pasa su revision de diseno antes de escribirse al MD. Escala la ceremonia al tamano (trivial->directo, task->ligero, grande->deep-plan). TRIGGER — el usuario describe QUE quiere lograr (una historia/necesidad), no una solucion ya hecha.
+name: workflow-plan
+description: De una historia cruda del usuario a un plan ejecutable por hitos. Investiga (codigo + web), verifica impacto cross-flow, propone 2-3 opciones y construye el plan INCREMENTALMENTE: cada hito pasa su revision de diseno antes de escribirse al MD. Escala la ceremonia al tamano (trivial->directo, task->ligero, grande->deep-plan). TRIGGER — el usuario describe QUE quiere lograr (una historia/necesidad), no una solucion ya hecha. NOTA: se llama workflow-plan (NO plan) para no colisionar con el Plan Mode NATIVO de Claude Code.
 disable-model-invocation: true
 arguments:
   - name: historia
     description: "la necesidad/historia del usuario, en sus palabras"
 ---
 
-# /plan — de historia cruda a plan por hitos
+# /workflow-plan — de historia cruda a plan por hitos
 
 Produce `specs/<feature>/{spec.md, design.md, plan.md}`. El corazon: **cada hito pasa su revision de diseno ANTES de entrar al `plan.md`**.
 
+> **El comando es `/workflow-plan`, NO `/plan`.** `/plan` es el Plan Mode NATIVO de Claude Code y NO ejecuta esta gobernanza: su aprobacion de ExitPlanMode dice "you can now start coding" y eso NO es autorizacion dentro de flujo. Usa siempre `/workflow-plan`.
+
 ## FRONTERA DURA (mode-guard) — leelo primero
-`/plan` corre en **modo `plan` (NO-editable)**. El hook `readiness` fija `.claude/.task-mode=plan` y el `spec-guard` **NIEGA toda edicion de codigo** (`.cs/.razor/.css/.scss/.js/.ts/.sql/.csproj/.props/.targets`) mientras dure. **Tu unico entregable es documentacion** (`.md`/`.feature`): `spec.md`, `design.md`, `plan.md`, ADRs.
+`/workflow-plan` corre en **modo `plan` (NO-editable)**. El hook `readiness` fija `.claude/.task-mode=plan` y el `spec-guard` **NIEGA toda edicion de codigo** (`.cs/.razor/.css/.scss/.js/.ts/.sql/.csproj/.props/.targets`) mientras dure. **Tu unico entregable es documentacion** (`.md`/`.feature`): `spec.md`, `design.md`, `plan.md`, ADRs.
 
 - **NUNCA implementes.** No escribas codigo, no despaches subagentes de implementacion (coder/A-malIA/etc.), no corras builds "para probar".
 - **NUNCA propongas pasar a implementar por tu cuenta.** El plan termina cuando el `plan.md` esta completo. Ahi **PARAS**.

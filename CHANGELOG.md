@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.1
+
+- **RENOMBRADO `/plan` → `/workflow-plan`.** `/plan` colisiona con el **Plan Mode NATIVO de Claude Code**: al escribir `/plan`, Claude Code entraba a su Plan Mode integrado (no nuestro comando, que tiene `disable-model-invocation`), y su aprobacion de ExitPlanMode ("you can now start coding") se leia como autorizacion para implementar — puenteando toda la gobernanza flujo. El comando REAL es ahora `/workflow-plan`. Actualizado en comando, `readiness`, `/flujo-mode`, README, template y CHANGELOG.
+- **Red de seguridad:** `readiness` ahora fija `.task-mode=plan` tanto en `/workflow-plan` como en el `/plan` nativo, para que ni el Plan Mode nativo pueda auto-autorizar edicion de codigo (el mode-guard sigue bloqueando hasta que el usuario declare un modo editable).
+- **Build local del guantelete resiliente a vulnerabilidades NuGet preexistentes.** La etapa `build` pasa a `dotnet build -warnaserror -p:NuGetAudit=false`: los avisos de seguridad de paquetes (`NU1900/1902/1903`, p.ej. MessagePack/System.Security.Cryptography.Xml) ya NO tumban el DoD en bucle — no son del cambio del desarrollador. Se conserva `-warnaserror` para warnings reales del compilador. (Nota: `NU1301` 401 de un feed privado es auth del entorno, no lo cubre el framework.)
+
 ## 0.6.0
 
 - **Nuevo: mode-guard — frontera dura entre planear y editar.** Un modo **NO-editable** (`plan`/`document`/`review`) hace que `spec-guard` **NIEGUE toda edicion de codigo** (`.cs/.razor/.css/.scss/.js/.ts/.sql/.csproj/.props/.targets`), sin importar spec activa ni `requirePaths`. Solo se permiten `.md`/`.feature`. El chequeo corre **antes** de cualquier early-exit del spec-guard, asi que aplica siempre.

@@ -15,7 +15,10 @@ $dir = Join-Path $proj '.claude'
 $modeFile = Join-Path $dir '.task-mode'
 if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
 
-if ($prompt -match '(^|\s)/(flujo-core:)?plan(\s|$)') {
+if ($prompt -match '(^|\s)/(flujo-core:)?workflow-plan(\s|$)') {
+  [System.IO.File]::WriteAllText($modeFile, 'plan')
+}
+elseif ($prompt -match '(^|\s)/plan(\s|$)') {
   [System.IO.File]::WriteAllText($modeFile, 'plan')
 }
 elseif ($prompt -match '(^|\s)/(flujo-core:)?implement(\s|$)') {

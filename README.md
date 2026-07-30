@@ -12,7 +12,7 @@
 - [Instalación](#instalación)
 - [Inicializar un proyecto](#inicializar-un-proyecto)
 - [Cómo se comporta el agente a partir de ahora](#cómo-se-comporta-el-agente-a-partir-de-ahora)
-- [Planeación por hitos (/plan)](#planeación-por-hitos-plan)
+- [Planeación por hitos (/workflow-plan)](#planeación-por-hitos-workflow-plan)
 - [Ejemplos de interacción](#ejemplos-de-interacción)
 - [Comandos](#comandos)
 - [El guantelete de calidad](#el-guantelete-de-calidad)
@@ -154,9 +154,11 @@ Reserva el modelo grande para pensar: la implementación (fase 5) se delega al s
 
 ---
 
-## Planeación por hitos (`/plan`)
+## Planeación por hitos (`/workflow-plan`)
 
-Para trabajo no trivial, `/plan <historia>` convierte una **historia cruda** del usuario (la necesidad, no una solución ya hecha) en un plan ejecutable **por hitos**. Escala al tamaño (YAGNI): trivial → directo; una task → plan ligero; grande → deep-plan.
+Para trabajo no trivial, `/workflow-plan <historia>` convierte una **historia cruda** del usuario (la necesidad, no una solución ya hecha) en un plan ejecutable **por hitos**. Escala al tamaño (YAGNI): trivial → directo; una task → plan ligero; grande → deep-plan.
+
+> **Es `/workflow-plan`, no `/plan`.** `/plan` es el Plan Mode nativo de Claude Code; su aprobación NO autoriza edición de código dentro de flujo. Usa siempre `/workflow-plan`.
 
 **Flujo:** triage → clasifica (modify-flow / add-to-flow / new) → investiga (código: codebase-memory / Serena / grep; web: `deep-research` / context7 / dxdocs) llenando un **research-log** → verifica **impacto cross-flow** (que no rompa otros flujos) → propone **2-3 opciones** cuestionando tus ideas (socrático + escalera Ponytail) → construye el plan **incrementalmente**.
 
@@ -258,9 +260,9 @@ IA:  Guantelete saltado. Queda registrado con tu razón en el reporte
 | `/flujo-init` | Materializa la capa de proyecto (docs, specs, gauntlet, CI). Idempotente. |
 | `/flujo-sync` | Reconcilia lo gestionado por el framework tras un update del plugin, sin tocar tu contenido. |
 | `/spec-new <slug>` | Crea `specs/<slug>/` (spec/plan/tasks/.feature) y la marca como feature activa. |
-| `/flujo-mode <modo>` | Declara el tipo de tarea (`spike`/`explore`/`research`/`bugfix`/`chore`/`feature`/`clear`) para el spec-guard. |
+| `/flujo-mode <modo>` | Declara el tipo de tarea para el spec-guard. Editables: `spike`/`explore`/`bugfix`/`chore`/`implement`/`feature`. NO-editables (bloquean código): `plan`/`document`/`review`. `clear` borra el modo. |
 | `/brainstorming` | De idea a diseño aprobado por secciones (socrático) antes de codear; escribe `specs/<feature>/design.md`. |
-| `/plan <historia>` | De una historia cruda a plan **por hitos**: investiga (código+web), impacto cross-flow, 2-3 opciones, y **cada hito pasa revisión de diseño antes de escribirse al MD**. |
+| `/workflow-plan <historia>` | De una historia cruda a plan **por hitos**: investiga (código+web), impacto cross-flow, 2-3 opciones, y **cada hito pasa revisión de diseño antes de escribirse al MD**. Corre en modo NO-editable (nunca implementa). *(No confundir con `/plan`, el Plan Mode nativo.)* |
 | `/ctx` · `/arch` | Dimensionar contexto mínimo · consultor de arquitectura (máx 2 opciones). |
 | `/adr-new <título>` | Crea un ADR con formato MADR y numeración consecutiva. |
 | `/gauntlet [tier]` | Corre el guantelete a mano (`local`/`ci`/`all`). `/gauntlet skip --reason "…"` para saltarlo con traza. |
@@ -523,7 +525,7 @@ Diátaxis (Daniele Procida) · ADR/MADR (Michael Nygard + proyecto MADR) · C4 m
 - spec-guard (bloqueo condicionado por rutas + modo, verificado por casos) y ruteo de modelos por subagente.
 
 **Cableado, aún por rodar en real:**
-- `/plan` (planeación por hitos) recién enviado en v0.5.0; falta dogfood. `/implement` (ejecución por hitos) es el Paso 2 pendiente.
+- `/workflow-plan` (planeación por hitos) + mode-guard v0.6.x; en dogfood. `/implement` (ejecución por hitos) es el Paso 2 pendiente.
 - Etapas de test (unit/integración/BDD/E2E/mutación) vienen **apagadas** hasta conectar tus proyectos de test.
 - `docs-rewrite` está diseñado e implementado; falta rodaje sobre documentación real.
 - Pensado para **.NET** hoy; el motor es agnóstico, el stack se cambia.

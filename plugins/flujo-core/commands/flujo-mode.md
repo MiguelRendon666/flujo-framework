@@ -14,7 +14,7 @@ Este comando fija `.claude/.task-mode`. **El hook `readiness` lo escribe desde t
 ## Modos
 
 **NO-editables** — bloquean TODA edicion de codigo (`.cs/.razor/.css/.scss/.js/.ts/.sql/.csproj/.props/.targets`) y de los archivos de control; solo permiten `.md`/`.feature`:
-- `plan` — construir el plan (lo fija `/plan` automaticamente).
+- `plan` — construir el plan (lo fija `/workflow-plan` automaticamente).
 - `document` — escribir/actualizar documentacion.
 - `review` — revisar/auditar sin tocar codigo.
 

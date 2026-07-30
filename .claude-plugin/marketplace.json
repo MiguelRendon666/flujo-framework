@@ -6,7 +6,7 @@
       "name": "flujo-core",
       "source": "./plugins/flujo-core",
       "description": "Motor agnostico: flujo de 9 fases, guantelete de calidad, Definition of Done por hooks, docs IA-friendly.",
-      "version": "0.6.0",
+      "version": "0.6.1",
       "category": "workflow",
       "author": { "name": "Miguel Rendón" }
     },
