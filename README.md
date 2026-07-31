@@ -178,7 +178,9 @@ Para trabajo no trivial, `/workflow-plan <historia>` convierte una **historia cr
 
 **Artefactos:** `specs/<feature>/{spec.md (QUÉ), design.md (diseño aprobado), plan.md (hitos)}` + ADRs.
 
-> **Próximo (Paso 2):** `/flujo-implement` — el agente, al cerrar el plan, te indica que lo ejecutes; al correrlo, el hook cambia el modo a `implement` automáticamente y conduce la ejecución hito por hito (milestone-gauntlet de cada uno + re-plan ante hallazgos). El agente nunca implementa ni cambia de modo por su cuenta.
+## Ejecución por hitos (`/flujo-implement`)
+
+**Paso 2.** El agente, al cerrar el plan, te indica que ejecutes `/flujo-implement`; al correrlo, el hook cambia el modo a `implement` automáticamente y conduce la ejecución **un hito a la vez**: implementa los pasos (`coder`), corre el **guantelete de ese hito** tal como lo definió el plan (build/tests + `solid-guardian`/`design-critic`), y **PARA con un informe de cambios justificado a pedirte permiso** antes del siguiente hito. Reusa el límite de 8 intentos del DoD (`dod.json`). Ante un hallazgo que invalida el enfoque: **freno de mano** (revierte lo del hito con `git restore`, presenta hallazgos + propuestas ya pasadas por guantelete). Al terminar vuelve a modo `plan`. **Nunca commitea** (es tuyo) y **el agente nunca implementa ni cambia de modo por su cuenta.**
 
 ## Ejemplos de interacción
 
@@ -260,9 +262,10 @@ IA:  Guantelete saltado. Queda registrado con tu razón en el reporte
 | `/flujo-init` | Materializa la capa de proyecto (docs, specs, gauntlet, CI). Idempotente. |
 | `/flujo-sync` | Reconcilia lo gestionado por el framework tras un update del plugin, sin tocar tu contenido. |
 | `/spec-new <slug>` | Crea `specs/<slug>/` (spec/plan/tasks/.feature) y la marca como feature activa. |
-| `/flujo-mode <modo>` | Declara el tipo de tarea para el spec-guard. Editables: `spike`/`explore`/`bugfix`/`chore`/`implement`/`feature`. NO-editables (bloquean código): `plan`/`document`/`review`. `clear` borra el modo. |
+| `/flujo-mode <modo>` | Declara el tipo de tarea para el spec-guard. Editables ad-hoc: `spike`/`explore`/`bugfix`/`chore`/`feature`. NO-editables (bloquean código): `plan`/`document`/`review`. `clear` borra el modo. *(Para ejecutar un plan usa `/flujo-implement`, no un modo manual.)* |
 | `/brainstorming` | De idea a diseño aprobado por secciones (socrático) antes de codear; escribe `specs/<feature>/design.md`. |
 | `/workflow-plan <historia>` | De una historia cruda a plan **por hitos**: investiga (código+web), impacto cross-flow, 2-3 opciones, y **cada hito pasa revisión de diseño antes de escribirse al MD**. Corre en modo NO-editable (nunca implementa). *(No confundir con `/plan`, el Plan Mode nativo.)* |
+| `/flujo-implement` | **Paso 2.** Ejecuta el `plan.md` activo **hito por hito**: implementa, corre el guantelete del hito, y PARA con informe justificado a pedir permiso. Fija modo `implement` (vía hook), reusa el límite de 8 del DoD, freno de mano ante hallazgos, nunca commitea, al terminar vuelve a `plan`. Solo lo corre el usuario. |
 | `/ctx` · `/arch` | Dimensionar contexto mínimo · consultor de arquitectura (máx 2 opciones). |
 | `/adr-new <título>` | Crea un ADR con formato MADR y numeración consecutiva. |
 | `/gauntlet [tier]` | Corre el guantelete a mano (`local`/`ci`/`all`). `/gauntlet skip --reason "…"` para saltarlo con traza. |
@@ -525,7 +528,7 @@ Diátaxis (Daniele Procida) · ADR/MADR (Michael Nygard + proyecto MADR) · C4 m
 - spec-guard (bloqueo condicionado por rutas + modo, verificado por casos) y ruteo de modelos por subagente.
 
 **Cableado, aún por rodar en real:**
-- `/workflow-plan` (planeación por hitos) + mode-guard v0.6.x; en dogfood. `/flujo-implement` (ejecución por hitos) es el Paso 2 pendiente.
+- `/workflow-plan` (planeación por hitos) + `/flujo-implement` (ejecución por hitos, Paso 2) + mode-guard; en dogfood en el proyecto Malia.
 - Etapas de test (unit/integración/BDD/E2E/mutación) vienen **apagadas** hasta conectar tus proyectos de test.
 - `docs-rewrite` está diseñado e implementado; falta rodaje sobre documentación real.
 - Pensado para **.NET** hoy; el motor es agnóstico, el stack se cambia.

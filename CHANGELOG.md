@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.0
+
+- **Nuevo comando `/flujo-implement` (Paso 2): ejecucion del plan HITO POR HITO.** Toma el `plan.md` de la feature activa y ejecuta UN hito a la vez: implementa los pasos (`coder`), corre el "Guantelete del hito" tal como el plan lo definio (build/tests via `gauntlet.ps1` + `solid-guardian`/`design-critic`), y PARA con un informe de cambios justificado a pedir permiso antes del siguiente hito. **Reusa** el limite de 8 intentos del DoD (`dod.json` maxBlocks) y los agentes/skills existentes; no reescribe nada. **Freno de mano** ante hallazgos que invalidan el enfoque: `git restore` de lo tocado + hallazgos + propuestas ya pasadas por guantelete. **Nunca commitea** (es del usuario). Al terminar vuelve a modo `plan`. Solo lo corre el usuario: correrlo ES la autorizacion explicita, y `readiness` fija el modo `implement`.
+- README: nueva seccion "Ejecucion por hitos" + fila en la tabla de comandos. `implement` retirado de los modos manuales de `/flujo-mode` (reservado para `/flujo-implement`).
+
 ## 0.6.3
 
 - **El comando de ejecucion (Paso 2) se llamara `/flujo-implement`, no `/implement`** (evita colision como paso con `/plan`→`/workflow-plan`). Renombrado en `readiness` (detecta `/flujo-implement` → fija modo `implement`), mensajes del mode-guard, `/workflow-plan`, `/flujo-mode`, README.
