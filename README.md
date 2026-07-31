@@ -178,7 +178,7 @@ Para trabajo no trivial, `/workflow-plan <historia>` convierte una **historia cr
 
 **Artefactos:** `specs/<feature>/{spec.md (QUÉ), design.md (diseño aprobado), plan.md (hitos)}` + ADRs.
 
-> **Próximo (Paso 2):** `/implement` — ejecuta el plan hito por hito, corre el milestone-gauntlet de cada uno, y re-planifica ante hallazgos.
+> **Próximo (Paso 2):** `/flujo-implement` — el agente, al cerrar el plan, te indica que lo ejecutes; al correrlo, el hook cambia el modo a `implement` automáticamente y conduce la ejecución hito por hito (milestone-gauntlet de cada uno + re-plan ante hallazgos). El agente nunca implementa ni cambia de modo por su cuenta.
 
 ## Ejemplos de interacción
 
@@ -525,7 +525,7 @@ Diátaxis (Daniele Procida) · ADR/MADR (Michael Nygard + proyecto MADR) · C4 m
 - spec-guard (bloqueo condicionado por rutas + modo, verificado por casos) y ruteo de modelos por subagente.
 
 **Cableado, aún por rodar en real:**
-- `/workflow-plan` (planeación por hitos) + mode-guard v0.6.x; en dogfood. `/implement` (ejecución por hitos) es el Paso 2 pendiente.
+- `/workflow-plan` (planeación por hitos) + mode-guard v0.6.x; en dogfood. `/flujo-implement` (ejecución por hitos) es el Paso 2 pendiente.
 - Etapas de test (unit/integración/BDD/E2E/mutación) vienen **apagadas** hasta conectar tus proyectos de test.
 - `docs-rewrite` está diseñado e implementado; falta rodaje sobre documentación real.
 - Pensado para **.NET** hoy; el motor es agnóstico, el stack se cambia.

@@ -17,8 +17,8 @@ Produce `specs/<feature>/{spec.md, design.md, plan.md}`. El corazon: **cada hito
 `/workflow-plan` corre en **modo `plan` (NO-editable)**. El hook `readiness` fija `.claude/.task-mode=plan` y el `spec-guard` **NIEGA toda edicion de codigo** (`.cs/.razor/.css/.scss/.js/.ts/.sql/.csproj/.props/.targets`) mientras dure. **Tu unico entregable es documentacion** (`.md`/`.feature`): `spec.md`, `design.md`, `plan.md`, ADRs.
 
 - **NUNCA implementes.** No escribas codigo, no despaches subagentes de implementacion (coder/A-malIA/etc.), no corras builds "para probar".
-- **NUNCA propongas pasar a implementar por tu cuenta.** El plan termina cuando el `plan.md` esta completo. Ahi **PARAS**.
-- Implementar es exclusivo de **`/implement`** (comando aparte) y **solo el usuario** puede autorizarlo. Cambiar a un modo editable exige que el usuario lo declare EXPLICITAMENTE (`/implement` o `/flujo-mode <modo-editable>`). Nunca lo hagas tu.
+- **NUNCA cambies el modo por tu cuenta.** El plan termina cuando el `plan.md` esta completo. Ahi **PARAS**.
+- Al cerrar, **INDICA al usuario que ejecute `/flujo-implement`** para arrancar la ejecucion. Solo el usuario lo corre; al hacerlo, el hook cambia el modo automaticamente. Tu nunca lo disparas ni cambias `.task-mode` a mano.
 - Si crees que hace falta tocar codigo para validar algo: **dilo en el plan como paso pendiente**, no lo hagas.
 
 ## 0. Triage (escalera YAGNI)
@@ -63,7 +63,7 @@ Siguiente hito.
 
 ## 6. Cierre
 - `/adr-new` para decisiones significativas.
-- El `plan.md` queda listo para `/implement`: cada hito ya paso su revision de diseno.
+- El `plan.md` queda listo. **Cierra INDICANDO al usuario:** "Plan completo. Para ejecutarlo, corre `/flujo-implement`." Cada hito ya paso su revision de diseno; el usuario decide cuando arrancar.
 
 ## Reglas
 - Nunca inventes: todo hallazgo ancla a codigo o a research citado.

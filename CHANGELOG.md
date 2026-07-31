@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.3
+
+- **El comando de ejecucion (Paso 2) se llamara `/flujo-implement`, no `/implement`** (evita colision como paso con `/plan`→`/workflow-plan`). Renombrado en `readiness` (detecta `/flujo-implement` → fija modo `implement`), mensajes del mode-guard, `/workflow-plan`, `/flujo-mode`, README.
+- **Modelo de ejecucion aclarado:** el agente NUNCA implementa ni cambia de modo por su cuenta. Al cerrar el plan, **INDICA al usuario que ejecute `/flujo-implement`**; el usuario lo corre y el hook `readiness` cambia el modo a `implement` automaticamente (canal seguro: el mode-guard le impide al modelo editar `.task-mode`). El cambio de modo NO es manual.
+- **`implement` deja de ser un modo manual de `/flujo-mode`** — se reserva para `/flujo-implement`. `/flujo-mode` queda solo para tareas ad-hoc fuera de un plan (`spike`/`explore`/`bugfix`/`chore`/`feature`). El valor `implement` sigue en `exemptModes` porque lo fija el comando, no el usuario.
+- Nota: el DRIVER `/flujo-implement` (ejecucion hito-por-hito con milestone-gauntlet + re-plan + commit por hito) aun no esta construido; esto es solo el naming y el cableado del cambio-de-modo.
+
 ## 0.6.2
 
 - **FIX del bug real: el Stop/DoD buildeaba tras CANCELAR una orden.** El marcador `.flujo-dirty` (lo pone `mark-dirty` en PostToolUse cuando se edita codigo) se consumia recien en el siguiente `Stop`. Si un turno editaba codigo y era **interrumpido/cancelado**, su marcador quedaba huerfano y disparaba el guantelete (build) en el **siguiente turno conversacional** — aunque ese turno no tocara nada. Fix: `readiness` (UserPromptSubmit) **limpia `.flujo-dirty` al inicio de cada turno**, asi el marcador solo refleja ediciones de ESE turno. Reproducido y verificado (turno conversacional con marcador huerfano → NO buildea; turno que si edita → si buildea).

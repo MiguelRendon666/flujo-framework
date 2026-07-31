@@ -20,14 +20,14 @@ if ($nonEditing -contains $mode) {
   $leaf = [System.IO.Path]::GetFileName($file).ToLower()
   $control = @('.task-mode', '.active-feature', 'flujo.json')
   if ($control -contains $leaf) {
-    $r = "mode-guard: en modo '$mode' NO puedes cambiar el modo ni la config por tu cuenta ($leaf). Cambiar a un modo editable requiere que el USUARIO lo declare explicitamente con /flujo-mode <modo> o /implement (el hook lo fija desde el prompt del usuario, no desde una edicion tuya)."
+    $r = "mode-guard: en modo '$mode' NO puedes cambiar el modo ni la config por tu cuenta ($leaf). No edites .task-mode: para implementar un plan, INDICA al usuario que ejecute /flujo-implement; al correrlo, el hook cambia el modo automaticamente. El modo nunca lo cambias tu."
     (@{ hookSpecificOutput = @{ hookEventName = 'PreToolUse'; permissionDecision = 'deny'; permissionDecisionReason = $r } } | ConvertTo-Json -Compress -Depth 5)
     exit 0
   }
   $ext = [System.IO.Path]::GetExtension($file).ToLower()
   $codeExt = @('.cs', '.razor', '.css', '.scss', '.js', '.ts', '.sql', '.csproj', '.props', '.targets')
   if ($codeExt -contains $ext) {
-    $r = "mode-guard: estas en modo '$mode' (NO-editable). No se permite editar codigo durante '$mode'. Pasar a implementar requiere autorizacion EXPLICITA del usuario: /implement (o /flujo-mode <modo-editable> como spike|bugfix|implement). Los .md/.feature del plan si se permiten."
+    $r = "mode-guard: estas en modo '$mode' (NO-editable). No implementes por tu cuenta. Al terminar el plan, INDICA al usuario que ejecute /flujo-implement; al correrlo, el hook cambia el modo a implement y arranca la ejecucion hito por hito. Los .md/.feature del plan si se permiten."
     (@{ hookSpecificOutput = @{ hookEventName = 'PreToolUse'; permissionDecision = 'deny'; permissionDecisionReason = $r } } | ConvertTo-Json -Compress -Depth 5)
     exit 0
   }

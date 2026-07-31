@@ -1,10 +1,10 @@
 ---
 name: flujo-mode
-description: Declara explicitamente el tipo de la tarea actual (el modo). Modos NO-editables (plan, document, review) bloquean toda edicion de codigo. Modos editables sin spec (spike, explore, bugfix, chore, implement) permiten editar rutas de dominio sin frenar. `feature` (o sin modo) exige spec en rutas de dominio. `clear` borra el modo.
+description: Declara explicitamente el tipo de la tarea actual (el modo). Modos NO-editables (plan, document, review) bloquean toda edicion de codigo. Modos editables sin spec (spike, explore, bugfix, chore) permiten editar rutas de dominio sin frenar para arreglos ad-hoc. `feature` (o sin modo) exige spec en rutas de dominio. `clear` borra el modo. Para EJECUTAR un plan usa `/flujo-implement`, no este comando.
 disable-model-invocation: true
 arguments:
   - name: mode
-    description: "plan | document | review | spike | explore | bugfix | chore | implement | feature | clear"
+    description: "plan | document | review | spike | explore | bugfix | chore | feature | clear"
 ---
 
 # /flujo-mode — declarar el tipo de tarea
@@ -18,14 +18,16 @@ Este comando fija `.claude/.task-mode`. **El hook `readiness` lo escribe desde t
 - `document` — escribir/actualizar documentacion.
 - `review` — revisar/auditar sin tocar codigo.
 
-**Editables sin spec** — eximen del spec-guard: puedes editar rutas de dominio sin spec activa:
-- `spike`, `explore`, `bugfix`, `chore`, `implement`.
+**Editables sin spec** — eximen del spec-guard: puedes editar rutas de dominio sin spec activa, para arreglos ad-hoc puntuales:
+- `spike`, `explore`, `bugfix`, `chore`.
 
 **Editable con spec**:
 - `feature` (o sin archivo) → el spec-guard exige spec en `flujo.json > specGuard.requirePaths`.
 
 `clear` elimina el archivo (equivale a `feature`).
 
+> **Ejecutar un plan NO es esto.** Para implementar un `plan.md` usa **`/flujo-implement`** (Paso 2): ese comando fija el modo `implement` automaticamente via hook y conduce la ejecucion hito por hito. `/flujo-mode` es solo para declarar tareas ad-hoc fuera de un plan.
+
 ## La frontera dura (mode-guard)
 
-Pasar de un modo NO-editable a uno editable **requiere que TU lo declares explicitamente** aqui (o con `/implement`). El agente **nunca** puede hacer esa transicion solo: es tu autorizacion, con traza (el archivo queda). No adivina; tu decides cuando se pasa de planear/documentar/revisar a tocar codigo.
+Pasar de un modo NO-editable a uno editable **requiere que TU lo declares explicitamente** (con `/flujo-mode <editable>` para ad-hoc, o `/flujo-implement` para ejecutar un plan). El agente **nunca** puede hacer esa transicion solo: es tu autorizacion, con traza (el archivo queda). No adivina; tu decides cuando se pasa de planear/documentar/revisar a tocar codigo.

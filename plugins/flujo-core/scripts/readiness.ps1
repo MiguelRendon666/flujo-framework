@@ -23,7 +23,7 @@ if ($prompt -match '(^|\s)/(flujo-core:)?workflow-plan(\s|$)') {
 elseif ($prompt -match '(^|\s)/plan(\s|$)') {
   [System.IO.File]::WriteAllText($modeFile, 'plan')
 }
-elseif ($prompt -match '(^|\s)/(flujo-core:)?implement(\s|$)') {
+elseif ($prompt -match '(^|\s)/(flujo-core:)?flujo-implement(\s|$)') {
   [System.IO.File]::WriteAllText($modeFile, 'implement')
 }
 elseif ($prompt -match '(^|\s)/(flujo-core:)?flujo-mode\s+([a-zA-Z]+)') {
