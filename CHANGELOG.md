@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.9.0
+
+- **Pilar Gherkin / aceptacion.** Los escenarios `.feature` son documentacion viva SIEMPRE activa; ejecutarlos como prueba (etapa `bdd`) es opt-in por instalacion.
+- **Nuevo skill `gherkin-gen`:** genera los escenarios desde los criterios de aceptacion del `spec.md` (adversarial primero, UN `@happy` al final, `@cubre` en cada escenario). Ante criterio ambiguo o incompleto, PREGUNTA en vez de inventar. `spec-new` lo invoca: el `.feature` ya no nace vacio.
+- **Nuevo chequeo `gherkin-check` (etapa `gherkin` del guantelete, bloqueo duro):** un solo `@happy` por `.feature`, `@cubre` en cada escenario, estructura de pasos presente. Corre siempre que existan `.feature`.
+- **Sub-switch `testing.bdd`** (opt-in, default apagado): la ejecucion BDD se decide al instalar con una explicacion amplia (que requiere, a que afecta, como beneficia/perjudica). Apagarla NO apaga la escritura de escenarios.
+- **Marcadores por defecto** `@happy` / `@borde` / `@error` / `@cubre:<flujo/funcion>` — el `@cubre` es el puente `.feature` (flujo) <-> pruebas unitarias (funcion).
+- **`docs-rewrite`** ahora ENLAZA los `.feature` (sigue sin reescribirlos): la doc de un flujo referencia su `.feature` como fuente de verdad del comportamiento.
+- `flujo-implement` anti-stale extendido: al modificar un flujo, actualiza tambien sus escenarios `.feature`.
+- Politica en el core (agnostico); los comandos concretos de ejecucion viven en el `gauntlet.json` del proyecto.
+
 ## 0.8.0
 
 - **Pilar de pruebas: unitarias como parte DURA del guantelete (agnostico).** Nuevo skill `test-gen` que genera pruebas para funcion/flujo/funcionalidad pensadas COMO USUARIO (adversarial primero, happy path al final); cada prueba pasa un guantelete de 11 reglas antes de crearse (no duplicada, un solo happy path por grupo, debe poder fallar, prueba una sola cosa, independiente, determinista, asercion con sentido, nombre por escenario...).

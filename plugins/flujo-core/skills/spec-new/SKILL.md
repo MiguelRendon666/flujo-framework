@@ -14,7 +14,7 @@ Crea `specs/<feature>/` copiando `specs/_TEMPLATE/`:
 - `spec.md` — QUE se quiere y POR QUE (frontera dura, no el como). Criterios de aceptacion.
 - `plan.md` — COMO: arquitectura, stack, decisiones. Referencia a spec.md.
 - `tasks.md` — tareas numeradas `- [ ]`, derivadas de plan.md.
-- `<feature>.feature` — Gherkin: escenarios Given/When/Then = doc viva + test BDD (Reqnroll).
+- `<feature>.feature` — Gherkin: escenarios = doc viva + base de la prueba de aceptacion. **Se generan con la skill `gherkin-gen` a partir de los criterios de aceptacion del `spec.md`** (adversarial primero, UN `@happy`, `@cubre` en cada escenario); no se deja como plantilla vacia. Si un criterio es ambiguo o no define todo el camino, `gherkin-gen` PREGUNTA en vez de inventar.
 
 Tras crear, escribe el slug en `.claude/.active-feature` para que el DoD verifique las tareas de esta feature.
 

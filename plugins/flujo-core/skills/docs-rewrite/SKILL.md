@@ -31,7 +31,7 @@ Resolucion en cascada barata: codebase-memory → Serena/LSP → grep. Nunca car
 
 ## Pipeline
 
-0. Inventario (glob): docs/**, _inbox/**, README, CLAUDE.md. Excluir .feature (Reqnroll), ADR accepted (inmutables), CHANGELOG.
+0. Inventario (glob): docs/**, _inbox/**, README, CLAUDE.md. Los `.feature` NO se reescriben (son test), pero SI se ENLAZAN: toda doc de un flujo debe referenciar su `.feature` como fuente de verdad del comportamiento (cablear doc <-> Gherkin). Excluir de reescritura ADR accepted (inmutables), CHANGELOG.
 1. Atomizar: partir en unidades; etiquetar tipo y simbolos citados.
 2. Anchor: resolver estado de cada unidad.
 3. Conflictos: contradiccion / duplicidad (una copia canonica + cross-ref) / obsolescencia.

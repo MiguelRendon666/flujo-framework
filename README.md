@@ -188,6 +188,8 @@ El código de lógica **debe** estar probado; no es opcional. La lógica se cont
 
 Cada hito gana un **paso penúltimo de pruebas** (antes del doc-check): el skill **`test-gen`** las genera pensando **como usuario, no como programador** — casos borde, límites, errores **primero**, y el **happy path al final**. Cada prueba pasa un **guantelete de 11 reglas** antes de crearse (no duplicada, un solo happy path por grupo, debe poder fallar, prueba una sola cosa, determinista, aserción con sentido…). Se exime el código trivial (getters, contenedores de datos, catálogos repetidos, mapeos 1:1, UI). *Nota: los comandos concretos de prueba/cobertura/mutación viven en el `gauntlet.json` de tu proyecto; el framework define la política, no la tecnología.*
 
+**Aceptación (Gherkin).** Los escenarios `.feature` (`Dado/Cuando/Entonces`) son **documentación viva del comportamiento, siempre presente**: `gherkin-gen` los deriva de los criterios de aceptación de la spec (adversarial primero, un solo `@happy`, `@cubre:<flujo>` como puente con las unitarias) y **pregunta si un criterio es ambiguo**. El chequeo `gherkin-check` valida su sanidad (bloqueo duro). **Ejecutar** esos escenarios como prueba (etapa `bdd`) es **opt-in** — se decide al instalar con una explicación amplia de costo/beneficio; apagarlo no apaga la escritura de escenarios.
+
 ## Ejemplos de interacción
 
 ### Feature nueva, de principio a fin
