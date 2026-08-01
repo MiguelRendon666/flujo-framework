@@ -3,11 +3,11 @@
     { "id": "build", "order": 1, "cmd": "dotnet build -warnaserror", "tier": "local", "blocking": "hard" },
     { "id": "format", "order": 2, "cmd": "dotnet format --verify-no-changes", "tier": "local", "blocking": "hard" },
     { "id": "arch", "order": 5, "cmd": "dotnet test tests/Arch", "tier": "local", "blocking": "hard", "enabled": false },
-    { "id": "unit", "order": 6, "cmd": "dotnet test tests/Unit /p:CollectCoverage=true /p:Threshold=80", "tier": "local", "blocking": "hard", "enabled": false },
+    { "id": "unit", "order": 6, "cmd": "dotnet test ${testProject} /p:CollectCoverage=true /p:Threshold=80", "tier": "local", "blocking": "hard", "requiresTesting": true },
     { "id": "integration", "order": 7, "cmd": "dotnet test tests/Integration", "tier": "ci", "blocking": "hard", "enabled": false },
     { "id": "bdd", "order": 8, "cmd": "dotnet test tests/Bdd", "tier": "ci", "blocking": "hard", "enabled": false },
     { "id": "e2e", "order": 9, "cmd": "dotnet test tests/E2E", "tier": "ci", "blocking": "hard", "enabled": false },
-    { "id": "mutation", "order": 10, "cmd": "dotnet stryker", "tier": "nightly", "blocking": "soft", "enabled": false },
+    { "id": "mutation", "order": 10, "cmd": "dotnet stryker", "tier": "local", "blocking": "hard", "requiresTesting": true },
     { "id": "docdrift", "order": 11, "cmd": "echo docs-rewrite --check", "tier": "ci", "blocking": "soft", "enabled": false }
   ]
 }

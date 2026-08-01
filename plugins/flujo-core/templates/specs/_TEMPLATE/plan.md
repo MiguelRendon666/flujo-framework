@@ -36,6 +36,7 @@ tipo: modify-flow | add-to-flow | new   ·   complejidad: trivial | task | large
 - Pasos:
   - [ ] 1.1 <paso codigo>    — skill · mcp · coder · fuente: <archivo:linea / doc>
   - [ ] 1.2 <paso no-codigo> — fuente/porque: <...>
+  - [ ] 1.y pruebas unitarias — generar/actualizar con test-gen (adversarial primero, happy path al final); solo codigo de logica, respeta exenciones
   - [ ] 1.x doc-check         — revisar/actualizar docs del flujo
 - Guantelete del hito: <stages/tests scoped que lo validan>
 - Criterio de aceptacion: <verificable>
@@ -44,6 +45,7 @@ tipo: modify-flow | add-to-flow | new   ·   complejidad: trivial | task | large
 ### Hito 2: <objetivo>
 - Pasos:
   - [ ] 2.1 ...
+  - [ ] 2.y pruebas unitarias — test-gen (adversarial primero); solo codigo de logica
   - [ ] 2.x doc-check
 - Guantelete del hito: ...
 - Criterio de aceptacion: ...

@@ -44,7 +44,7 @@ Produce `specs/<feature>/{spec.md, design.md, plan.md}`. El corazon: **cada hito
 
 ## 5. Construye el plan por hitos — INCREMENTAL
 Por cada hito, en orden:
-1. Redacta: objetivo (entregable), que criterios de `spec.md` cubre, y sus **PASOS** (codigo y no-codigo; skill/mcp/tool por paso). **El ultimo paso SIEMPRE es doc-check** (revisar/actualizar la doc del flujo via `docs-rewrite`).
+1. Redacta: objetivo (entregable), que criterios de `spec.md` cubre, y sus **PASOS** (codigo y no-codigo; skill/mcp/tool por paso). **El penultimo paso SIEMPRE es "pruebas unitarias"** (generar/actualizar con `test-gen`, solo codigo de logica, respeta exenciones) y **el ultimo SIEMPRE es doc-check** (via `docs-rewrite`).
 2. Define el **guantelete del hito** (que stages/tests lo validan en ejecucion).
 3. **Revision de diseno del hito (checklist):**
    - [ ] los pasos cubren el objetivo del hito

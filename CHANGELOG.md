@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.8.0
+
+- **Pilar de pruebas: unitarias como parte DURA del guantelete (agnostico).** Nuevo skill `test-gen` que genera pruebas para funcion/flujo/funcionalidad pensadas COMO USUARIO (adversarial primero, happy path al final); cada prueba pasa un guantelete de 11 reglas antes de crearse (no duplicada, un solo happy path por grupo, debe poder fallar, prueba una sola cosa, independiente, determinista, asercion con sentido, nombre por escenario...).
+- **Switch de pruebas** (`flujo.json > testing.enabled`), decidido en la instalacion: `/flujo-init` busca el proyecto de pruebas del repo y lo propone; si no hay, sugiere crear uno o apagar el switch. Con el switch apagado, `stop-dod` recuerda en cada turno con codigo editado que ese cambio no queda cubierto por unit tests.
+- **Variable del proyecto de pruebas** (`testing.project`) en vez de la ruta quemada `tests/Unit`: `gauntlet.ps1` la sustituye en el comando. Switch encendido y sin proyecto configurado -> bloqueo duro.
+- **Stryker (mutation testing) pasa de nightly/informativo a local/duro** cuando el switch esta encendido: valida que las pruebas de verdad sirvan (mutan el CODIGO y revisan si las pruebas lo cazan).
+- **Paso penultimo por hito = pruebas unitarias:** plantilla `plan.md`, `/workflow-plan` y `/flujo-implement` insertan/ejecutan un paso de pruebas (via `test-gen`) antes del doc-check, con anti-stale (al modificar un flujo se actualizan sus pruebas).
+- **Exenciones** configurables (`testing.exemptions`): getters, contenedores de datos, catalogos repetidos, mapeos 1:1, autogenerado, cableado, UI. Siempre requerido: procesos y funciones con logica.
+- Politica en el core (agnostico); los comandos concretos de prueba/cobertura/mutacion viven en el `gauntlet.json` del proyecto. Gherkin (marcadores + sanidad + doc-wiring) queda para 0.8.1.
+
 ## 0.7.0
 
 - **Nuevo comando `/flujo-implement` (Paso 2): ejecucion del plan HITO POR HITO.** Toma el `plan.md` de la feature activa y ejecuta UN hito a la vez: implementa los pasos (`coder`), corre el "Guantelete del hito" tal como el plan lo definio (build/tests via `gauntlet.ps1` + `solid-guardian`/`design-critic`), y PARA con un informe de cambios justificado a pedir permiso antes del siguiente hito. **Reusa** el limite de 8 intentos del DoD (`dod.json` maxBlocks) y los agentes/skills existentes; no reescribe nada. **Freno de mano** ante hallazgos que invalidan el enfoque: `git restore` de lo tocado + hallazgos + propuestas ya pasadas por guantelete. **Nunca commitea** (es del usuario). Al terminar vuelve a modo `plan`. Solo lo corre el usuario: correrlo ES la autorizacion explicita, y `readiness` fija el modo `implement`.

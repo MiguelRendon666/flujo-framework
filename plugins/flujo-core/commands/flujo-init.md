@@ -20,6 +20,7 @@ Materializa la capa de proyecto desde `${CLAUDE_PLUGIN_ROOT}/templates/` hacia `
 5. **Ajustar los manifiestos**:
    - `gauntlet.json`: verificar que los comandos del stack (`dotnet ...`) apuntan a proyectos reales; si no existen, dejar la etapa `enabled: false` y avisarlo.
    - `flujo.json` → `specGuard.requirePaths`: **detectar la estructura de dominio del repo** (carpetas de business objects/controllers, proyecto de modulo, etc.) y **PROPONER** al usuario una lista de globs; escribirla tras su OK. No dejarla vacia en silencio; si el usuario no aprueba ninguna, avisar que spec-guard no enforzara dominio hasta configurarla.
+   - `flujo.json` → `testing`: **buscar el proyecto de pruebas del repo** (por convencion, un proyecto/carpeta cuyo nombre incluya Test/Tests/spec). Si hay candidatos, PROPONERLOS y escribir `testing.project` tras el OK. Si no se encuentra: avisar y preguntar — (a) el usuario indica el nombre, (b) sugerir crear un proyecto de pruebas, o (c) apagar el switch (`testing.enabled=false`) advirtiendo que sin proyecto de pruebas no habra unit tests. El switch se decide aqui, informado; no se apaga en silencio.
 6. **Imprimir la guia de llenado** (lo mas importante):
 
 ```

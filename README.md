@@ -182,6 +182,12 @@ Para trabajo no trivial, `/workflow-plan <historia>` convierte una **historia cr
 
 **Paso 2.** El agente, al cerrar el plan, te indica que ejecutes `/flujo-implement`; al correrlo, el hook cambia el modo a `implement` automáticamente y conduce la ejecución **un hito a la vez**: implementa los pasos (`coder`), corre el **guantelete de ese hito** tal como lo definió el plan (build/tests + `solid-guardian`/`design-critic`), y **PARA con un informe de cambios justificado a pedirte permiso** antes del siguiente hito. Reusa el límite de 8 intentos del DoD (`dod.json`). Ante un hallazgo que invalida el enfoque: **freno de mano** (revierte lo del hito con `git restore`, presenta hallazgos + propuestas ya pasadas por guantelete). Al terminar vuelve a modo `plan`. **Nunca commitea** (es tuyo) y **el agente nunca implementa ni cambia de modo por su cuenta.**
 
+## Pruebas obligatorias (skill `test-gen` + guantelete)
+
+El código de lógica **debe** estar probado; no es opcional. La lógica se controla con un **switch** (`flujo.json > testing.enabled`) que **tú decides al instalar** (informado): `/flujo-init` busca el proyecto de pruebas del repo y lo propone; si no hay, sugiere crear uno o apagar el switch. Con el switch **encendido**, las pruebas y **Stryker** (mutation testing) son **bloqueo duro**; sin proyecto de pruebas configurado, el guantelete **truena**. Con el switch **apagado**, cada cambio de código te **recuerda** que no queda cubierto.
+
+Cada hito gana un **paso penúltimo de pruebas** (antes del doc-check): el skill **`test-gen`** las genera pensando **como usuario, no como programador** — casos borde, límites, errores **primero**, y el **happy path al final**. Cada prueba pasa un **guantelete de 11 reglas** antes de crearse (no duplicada, un solo happy path por grupo, debe poder fallar, prueba una sola cosa, determinista, aserción con sentido…). Se exime el código trivial (getters, contenedores de datos, catálogos repetidos, mapeos 1:1, UI). *Nota: los comandos concretos de prueba/cobertura/mutación viven en el `gauntlet.json` de tu proyecto; el framework define la política, no la tecnología.*
+
 ## Ejemplos de interacción
 
 ### Feature nueva, de principio a fin

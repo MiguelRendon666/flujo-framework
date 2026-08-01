@@ -23,6 +23,7 @@ Toma el **primer hito pendiente** del `plan.md`. Para ese hito:
 2. **Ejecuta los pasos en orden:**
    - Pasos de codigo -> agente `coder`.
    - Pasos no-codigo -> directo.
+   - Paso penultimo (pruebas unitarias) -> skill `test-gen` sobre lo que el hito creo/modifico. **Anti-stale:** si el hito MODIFICA un flujo, revisa/actualiza tambien las pruebas existentes de ese flujo, no solo agregas.
    - Ultimo paso (doc-check) -> skill `docs-rewrite` sobre la doc del flujo afectado.
 3. **Corre el Guantelete del hito** tal como lo definio el plan:
    - Build/tests -> `gauntlet.ps1` (o los comandos especificos que liste ese hito).

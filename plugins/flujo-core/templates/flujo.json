@@ -6,6 +6,21 @@
     "exemptModes": ["spike", "explore", "bugfix", "chore", "implement"],
     "nonEditingModes": ["plan", "document", "review"]
   },
+  "testing": {
+    "enabled": true,
+    "project": "",
+    "coverage": "changed",
+    "exemptions": [
+      "accesores-simples",
+      "contenedores-de-datos",
+      "constructores-triviales",
+      "catalogos-repetidos",
+      "mapeos-1a1",
+      "autogenerado",
+      "cableado-configuracion",
+      "presentacion-ui"
+    ]
+  },
   "models": {
     "plan": "opus",
     "code": "sonnet",
