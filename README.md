@@ -194,6 +194,15 @@ Cada hito gana un **paso penúltimo de pruebas** (antes del doc-check): el skill
 
 **Estilos (theme-first).** Opt-in por instalación (`style.enabled`): cuando se activa, **ningún valor de identidad visual se escribe a mano** (colores, tamaños, radios, fuentes, `1px`, `opacity`…) — todo sale de tokens del tema (`style.themeSource`, definido por ti). El skill **`theme-first`** aplica un **mini-gauntlet de token** (¿ya existe? → reusar; ¿casi-duplicado? → **para y pregunta**, evitando la "sopa de tokens"; nombre por rol, no por componente) y el detector **`style-check`** bloquea literales quemados en CSS/SCSS. Los estilos de **vendor** que no controlas (`style.vendorExempt`, ej. XAF) son intocables. Mover elementos no es esto (eso es `design-critic`). La detección específica por tecnología vive en los stack-packs.
 
+## Herramientas compañeras recomendadas
+
+Flujo funciona bien solo, pero se potencia con herramientas **externas** que **no viajan en el plugin** (no son paquetes portables — son per-máquina). Instálalas con **`/helpers`** (opcionales):
+- ⭐ **ponytail** (calidad) — la escalera anti-sobreingeniería que reta necesidad/tamaño de cada cambio. *(github.com/DietrichGebert/ponytail)*
+- **HEADROOM** (tokens) — comprime el contexto (logs/JSON/AST) antes de llegar al modelo; MCP en Rust. *(aswin402)*
+- **caveman** (tokens) — skill que hace la salida más terse (~65% menos tokens en prosa). *(github.com/JuliusBrussee/caveman)*
+
+Los MCPs **portables** (`codebase-memory`, `context7`, `fetch`, `playwright`, `sequentialthinking`) sí los trae el plugin; estas tres son complementos per-máquina.
+
 ## Ejemplos de interacción
 
 ### Feature nueva, de principio a fin
@@ -273,6 +282,7 @@ IA:  Guantelete saltado. Queda registrado con tu razón en el reporte
 |---|---|
 | `/flujo-new <nombre> <idea>` | Crea un proyecto **desde cero** (greenfield) con flujo desde el día uno: planea (stack elegido por ti), **guía** el scaffold del esqueleto (stack-pack o herramienta nativa), y cablea la gobernanza. Semilla = idea inline o archivo de requerimientos. |
 | `/flujo-init` | Instala flujo sobre un proyecto que **ya existe**: materializa la capa de proyecto (docs, specs, gauntlet, CI). Idempotente. |
+| `/helpers` | Instala las **herramientas compañeras** recomendadas (`ponytail`, `HEADROOM`, `caveman`) — per-máquina y opcionales; no viajan en el plugin. |
 | `/flujo-sync` | Reconcilia lo gestionado por el framework tras un update del plugin, sin tocar tu contenido. |
 | `/spec-new <slug>` | Crea `specs/<slug>/` (spec/plan/tasks/.feature) y la marca como feature activa. |
 | `/flujo-mode <modo>` | Declara el tipo de tarea para el spec-guard. Editables ad-hoc: `spike`/`explore`/`bugfix`/`chore`/`feature`. NO-editables (bloquean código): `plan`/`document`/`review`. `clear` borra el modo. *(Para ejecutar un plan usa `/flujo-implement`, no un modo manual.)* |

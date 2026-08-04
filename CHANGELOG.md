@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.12.1
+
+- **Nuevo comando `/helpers`:** instala las herramientas companeras recomendadas — **per-maquina, opcionales, NO viajan en el plugin** (no son portables): `ponytail` (CALIDAD, escalera anti-sobreingenieria — DietrichGebert/ponytail), `HEADROOM` (TOKENS, compresion de contexto en Rust — aswin402), `caveman` (TOKENS, skill de salida terse ~65% menos prosa — JuliusBrussee/caveman). Presenta el menu, el usuario elige, corre los pasos y credita a cada proyecto.
+- README: seccion "Herramientas companeras recomendadas" + fila de `/helpers`. Aclara que los MCPs portables (`codebase-memory`/`context7`/`fetch`/`playwright`/`sequentialthinking`) SI los trae el plugin; estas 3 son complementos per-maquina.
+
 ## 0.12.0 (beta pre-1.0)
 
 - **Bootstrap / greenfield: nuevo comando `/flujo-new`.** Crea un proyecto DESDE CERO con gobernanza flujo desde el dia uno, en vez de instalar sobre uno existente. Toma la **idea del proyecto (inline) o un archivo de requerimientos** como semilla; planea (`brainstorming` + `arch`, **stack elegido por el usuario**); **guia** el scaffold del esqueleto (receta de stack-pack si existe, si no indica el scaffolder nativo a correr — `dotnet new`, `npm create`, etc.); y cablea la gobernanza (`flujo-init`) con `requirePaths`/`testing.project`/`themeSource` ya POBLADOS.
