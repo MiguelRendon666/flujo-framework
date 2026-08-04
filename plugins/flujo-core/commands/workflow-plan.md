@@ -37,6 +37,9 @@ Produce `specs/<feature>/{spec.md, design.md, plan.md}`. El corazon: **cada hito
 ## 3. Impacto cross-flow
 `codebase-memory.trace_path`/`query_graph`: ¿tocar esto rompe otros flujos? Registra en la tabla de impacto; si hay choque, propon mitigacion o replantea antes de seguir.
 
+## 3.1 Deuda tecnica (informativa, NO bloqueante)
+Corre el skill `tech-debt` sobre los flujos/areas que el plan va a TOCAR e incluye sus hallazgos como seccion **informativa** del `plan.md`. Es enforcement **NO obligatorio**: surface la deuda relevante para que el usuario decida si la paga como parte del plan (agregando hitos) o la ignora. **Nunca bloquea la planeacion.**
+
 ## 4. Propon (cuestiona, no aceptes a ciegas)
 - **brainstorming** socratico: preguntas de una en una hasta articular el objetivo real (no el asumido).
 - **arch**: 2-3 opciones con trade-offs concretos (respaldadas por research interno + web) + recomendacion.

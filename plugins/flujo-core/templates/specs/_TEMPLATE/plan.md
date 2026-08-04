@@ -24,6 +24,12 @@ tipo: modify-flow | add-to-flow | new   ·   complejidad: trivial | task | large
 |---|---|---|---|
 |  |  |  |  |
 
+## Deuda tecnica (informativa, NO bloqueante)
+Hallazgos del skill `tech-debt` sobre los flujos que este plan toca. El usuario decide si se paga (agregando hitos) o se deja registrada en `docs/TECH_DEBT.md`. No bloquea el plan.
+| Ubicacion | Deuda | Impacto | Remediacion | Esfuerzo | ¿Se paga en este plan? |
+|---|---|---|---|---|---|
+|  |  |  |  |  |  |
+
 ## Decisiones (opcion elegida vs descartadas)
 | Decision | Elegida | Descartadas + por que | ADR |
 |---|---|---|---|

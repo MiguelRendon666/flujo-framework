@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.11.0
+
+- **Deuda tecnica (skill advisory, NO gate).** Nuevo skill `tech-debt`: analiza el codigo que le apuntes (archivo/flujo/modulo) y concluye con un informe **priorizado por impacto** (ubicacion, categoria, por que es deuda, remediacion, esfuerzo). Read-only respecto al codigo; **NO bloquea, NO corre en el guantelete ni en el DoD**. Para scopes grandes delega la lectura a un subagente.
+- **Ledger `docs/TECH_DEBT.md`** (tech debt ledger): registro corrido de la deuda con estado (`open`/`in-progress`/`paid`/`wont-fix`); el skill actualiza estados sin duplicar filas.
+- **Toque NO obligatorio en `/workflow-plan`:** al planear, surface la deuda de los flujos que el plan toca como seccion informativa del `plan.md` (el usuario decide si la paga con hitos o la ignora). **Nunca bloquea la planeacion.**
+- Categorias: duplicacion, complejidad, acoplamiento/god-class, codigo muerto, TODO/FIXME/HACK, valores magicos en logica, nombres confusos, patrones obsoletos. No duplica `solid-guardian` (SOLID por-cambio) / `theme-first` (estilos) / `test-gen` (pruebas).
+
 ## 0.10.0
 
 - **Pilar theme-first / gobernanza de estilos.** Cero valores de identidad visual quemados en estilos autorados: colores, gradientes, sombras, radios, fuentes, espaciados, duraciones, z-index, breakpoints, grosores (incluido `1px`), `line-height` y `opacity` salen del TEMA (tokens/variables). Exentos: `0`, porcentajes, viewport, fracciones de grid, keywords.
