@@ -22,6 +22,12 @@
       "presentacion-ui"
     ]
   },
+  "style": {
+    "enabled": false,
+    "themeSource": "",
+    "vendorExempt": [],
+    "exemptions": ["0", "porcentajes", "viewport", "grid-fr", "keywords"]
+  },
   "models": {
     "plan": "opus",
     "code": "sonnet",

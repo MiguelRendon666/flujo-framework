@@ -22,6 +22,7 @@ Toma el **primer hito pendiente** del `plan.md`. Para ese hito:
 1. **Lee del plan:** objetivo, pasos, "Guantelete del hito" y criterio de aceptacion (tal como el `plan.md` ya los define).
 2. **Ejecuta los pasos en orden:**
    - Pasos de codigo -> agente `coder`.
+   - Pasos de UI/estilo -> respetan `theme-first` (si `style.enabled`): cero valores de identidad quemados, todo del tema; el mini-gauntlet de token antes de crear uno.
    - Pasos no-codigo -> directo.
    - Paso penultimo (pruebas unitarias) -> skill `test-gen` sobre lo que el hito creo/modifico. **Anti-stale:** si el hito MODIFICA un flujo, revisa/actualiza tambien las pruebas existentes de ese flujo Y sus escenarios `.feature` (via `gherkin-gen`), no solo agregas.
    - Ultimo paso (doc-check) -> skill `docs-rewrite` sobre la doc del flujo afectado.

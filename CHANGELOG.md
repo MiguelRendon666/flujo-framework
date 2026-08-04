@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.10.0
+
+- **Pilar theme-first / gobernanza de estilos.** Cero valores de identidad visual quemados en estilos autorados: colores, gradientes, sombras, radios, fuentes, espaciados, duraciones, z-index, breakpoints, grosores (incluido `1px`), `line-height` y `opacity` salen del TEMA (tokens/variables). Exentos: `0`, porcentajes, viewport, fracciones de grid, keywords.
+- **Nuevo skill `theme-first`** con un **mini-gauntlet de token** (4 checks): ¿amerita token? · ¿ya existe -> reusar? · ¿casi-duplicado -> PARA y PREGUNTA? (evita la "sopa de tokens" tipo `--card-radius` vs `--popup-radius`) · ¿nombre semantico/escala, no por componente? Gobierna lo nuevo/cambiado; consolidar el token-soup existente = limpieza opt-in.
+- **Nuevo detector `style-check.ps1` (etapa `theme-check`, bloqueo duro):** deteccion deterministica basica sobre archivos CSS/SCSS de literales de identidad quemados fuera de exenciones. La deteccion sucia por tecnologia (inline, CSS-in-JS, C#<->JS<->CSS) la refuerzan los stack-packs.
+- **Switch de instalacion `style.enabled`** (opt-in; no todo proyecto tiene UI) + `style.themeSource` (fuente del tema, definida por el usuario) + `style.vendorExempt` (estilos de vendor que el usuario no controla, ej. XAF, intocables).
+- No-aplicabilidad: mover/reordenar elementos NO es theme-first (es `design-critic`); los estilos de vendor no se juzgan.
+- `gauntlet.ps1`: gate `requiresStyle` + dispatch interno generico (gherkin-check, style-check).
+
 ## 0.9.0
 
 - **Pilar Gherkin / aceptacion.** Los escenarios `.feature` son documentacion viva SIEMPRE activa; ejecutarlos como prueba (etapa `bdd`) es opt-in por instalacion.

@@ -190,6 +190,8 @@ Cada hito gana un **paso penúltimo de pruebas** (antes del doc-check): el skill
 
 **Aceptación (Gherkin).** Los escenarios `.feature` (`Dado/Cuando/Entonces`) son **documentación viva del comportamiento, siempre presente**: `gherkin-gen` los deriva de los criterios de aceptación de la spec (adversarial primero, un solo `@happy`, `@cubre:<flujo>` como puente con las unitarias) y **pregunta si un criterio es ambiguo**. El chequeo `gherkin-check` valida su sanidad (bloqueo duro). **Ejecutar** esos escenarios como prueba (etapa `bdd`) es **opt-in** — se decide al instalar con una explicación amplia de costo/beneficio; apagarlo no apaga la escritura de escenarios.
 
+**Estilos (theme-first).** Opt-in por instalación (`style.enabled`): cuando se activa, **ningún valor de identidad visual se escribe a mano** (colores, tamaños, radios, fuentes, `1px`, `opacity`…) — todo sale de tokens del tema (`style.themeSource`, definido por ti). El skill **`theme-first`** aplica un **mini-gauntlet de token** (¿ya existe? → reusar; ¿casi-duplicado? → **para y pregunta**, evitando la "sopa de tokens"; nombre por rol, no por componente) y el detector **`style-check`** bloquea literales quemados en CSS/SCSS. Los estilos de **vendor** que no controlas (`style.vendorExempt`, ej. XAF) son intocables. Mover elementos no es esto (eso es `design-critic`). La detección específica por tecnología vive en los stack-packs.
+
 ## Ejemplos de interacción
 
 ### Feature nueva, de principio a fin

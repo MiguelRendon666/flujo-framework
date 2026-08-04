@@ -12,9 +12,14 @@ $cfg = Get-Content $cfgPath -Raw | ConvertFrom-Json
 $testEnabled = $false
 $testBdd = $false
 $testProject = ''
+$styleEnabled = $false
 $flujoPath = Join-Path $ProjectDir 'flujo.json'
 if (Test-Path $flujoPath) {
-  try { $t = (Get-Content $flujoPath -Raw | ConvertFrom-Json).testing; if ($t) { $testEnabled = ($t.enabled -eq $true); $testBdd = ($t.bdd -eq $true); $testProject = [string]$t.project } } catch {}
+  try {
+    $fj = Get-Content $flujoPath -Raw | ConvertFrom-Json
+    $t = $fj.testing; if ($t) { $testEnabled = ($t.enabled -eq $true); $testBdd = ($t.bdd -eq $true); $testProject = [string]$t.project }
+    if ($fj.style) { $styleEnabled = ($fj.style.enabled -eq $true) }
+  } catch {}
 }
 
 $tiers = switch ($Tier) {
@@ -41,9 +46,13 @@ foreach ($s in $stages) {
       exit 1
     }
   }
+  # etapa de estilos: gated por el switch style.enabled
+  if ($s.requiresStyle -eq $true) {
+    if (-not $styleEnabled) { continue }
+  }
   $ran++
-  if ($s.internal -eq 'gherkin-check') {
-    $out = & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'gherkin-check.ps1') -ProjectDir $ProjectDir 2>&1
+  if ($s.internal) {
+    $out = & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot ("$($s.internal).ps1")) -ProjectDir $ProjectDir 2>&1
     $code = $LASTEXITCODE
   }
   else {
