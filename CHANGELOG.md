@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.12.0 (beta pre-1.0)
+
+- **Bootstrap / greenfield: nuevo comando `/flujo-new`.** Crea un proyecto DESDE CERO con gobernanza flujo desde el dia uno, en vez de instalar sobre uno existente. Toma la **idea del proyecto (inline) o un archivo de requerimientos** como semilla; planea (`brainstorming` + `arch`, **stack elegido por el usuario**); **guia** el scaffold del esqueleto (receta de stack-pack si existe, si no indica el scaffolder nativo a correr — `dotnet new`, `npm create`, etc.); y cablea la gobernanza (`flujo-init`) con `requirePaths`/`testing.project`/`themeSource` ya POBLADOS.
+- El core **ORQUESTA** (agnostico); el esqueleto concreto lo hace el stack-pack o la herramienta nativa. `constitution.md` opcional; `git init` si no es repo.
+- Para instalar flujo sobre un proyecto EXISTENTE sigue siendo `/flujo-init`.
+- **Ultima beta antes de 1.0:** completos los pilares (implement 0.7, pruebas 0.8, gherkin 0.9, theme-first 0.10, deuda 0.11) + bootstrap 0.12. Para 1.0 falta el "verde real" (un ciclo completo `plan -> scaffold/implement -> pruebas -> DoD` en verde en un proyecto real).
+
 ## 0.11.0
 
 - **Deuda tecnica (skill advisory, NO gate).** Nuevo skill `tech-debt`: analiza el codigo que le apuntes (archivo/flujo/modulo) y concluye con un informe **priorizado por impacto** (ubicacion, categoria, por que es deuda, remediacion, esfuerzo). Read-only respecto al codigo; **NO bloquea, NO corre en el guantelete ni en el DoD**. Para scopes grandes delega la lectura a un subagente.

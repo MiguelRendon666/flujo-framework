@@ -271,7 +271,8 @@ IA:  Guantelete saltado. Queda registrado con tu razón en el reporte
 
 | Comando | Qué hace |
 |---|---|
-| `/flujo-init` | Materializa la capa de proyecto (docs, specs, gauntlet, CI). Idempotente. |
+| `/flujo-new <nombre> <idea>` | Crea un proyecto **desde cero** (greenfield) con flujo desde el día uno: planea (stack elegido por ti), **guía** el scaffold del esqueleto (stack-pack o herramienta nativa), y cablea la gobernanza. Semilla = idea inline o archivo de requerimientos. |
+| `/flujo-init` | Instala flujo sobre un proyecto que **ya existe**: materializa la capa de proyecto (docs, specs, gauntlet, CI). Idempotente. |
 | `/flujo-sync` | Reconcilia lo gestionado por el framework tras un update del plugin, sin tocar tu contenido. |
 | `/spec-new <slug>` | Crea `specs/<slug>/` (spec/plan/tasks/.feature) y la marca como feature activa. |
 | `/flujo-mode <modo>` | Declara el tipo de tarea para el spec-guard. Editables ad-hoc: `spike`/`explore`/`bugfix`/`chore`/`feature`. NO-editables (bloquean código): `plan`/`document`/`review`. `clear` borra el modo. *(Para ejecutar un plan usa `/flujo-implement`, no un modo manual.)* |
