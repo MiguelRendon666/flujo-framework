@@ -23,7 +23,7 @@
 - [Arquitectura](#arquitectura)
 - [Herramientas incluidas y créditos](#herramientas-incluidas-y-créditos)
 - [Escape hatches y desactivación](#escape-hatches-y-desactivación)
-- [Estado del proyecto (v0.5.1)](#estado-del-proyecto-v051)
+- [Estado del proyecto (v0.12.1)](#estado-del-proyecto-v0121)
 - [Troubleshooting](#troubleshooting)
 
 ---
@@ -539,22 +539,20 @@ Diátaxis (Daniele Procida) · ADR/MADR (Michael Nygard + proyecto MADR) · C4 m
 
 ---
 
-## Estado del proyecto (v0.5.1)
+## Estado del proyecto (v0.12.1)
 
-**Funciona y está probado:**
-- **Entrega de hooks por `settings.json`** (+ scripts en `.claude/flujo-hooks/`): verificado en Malia que **corre donde el `hooks.json` del plugin no** — es la vía fiable (file-watched) y viaja en git.
-- Hooks deterministas (comentarios, comandos destructivos) — verificados.
-- DoD por Stop hook: bloquea "done" si el guantelete falla; converge y escala a los 8 intentos.
-- Runner del guantelete por manifiesto (build y formato listos).
-- Instalable: marketplace + 2 plugins publicados y validados (`scripts/validate-plugins.ps1`).
-- Planeación: `brainstorming` (diseño aprobado por secciones), `ctx`/`arch`, y autorevisión del plan (anti-placeholder, cobertura spec→tarea, conflict scan).
-- spec-guard (bloqueo condicionado por rutas + modo, verificado por casos) y ruteo de modelos por subagente.
+**Beta pre-1.0 — los pilares están completos y publicados:**
+- **Planeación por hitos** (`/workflow-plan`) y **ejecución hito-por-hito** (`/flujo-implement`) con **mode-guard** (frontera dura planear/editar; el agente nunca implementa ni cambia de modo solo).
+- **Pruebas** como parte dura del guantelete (`test-gen` con filosofía adversarial + cobertura + **Stryker**), switch por instalación.
+- **Aceptación Gherkin** (`gherkin-gen` + `gherkin-check`); ejecución BDD opt-in.
+- **Estilos theme-first** (`theme-first` + `style-check`) con mini-gauntlet de token.
+- **Deuda técnica** (`tech-debt`, advisory) + ledger.
+- **Bootstrap greenfield** (`/flujo-new`) — crear un proyecto desde cero con flujo.
+- **Herramientas compañeras** (`/helpers`).
+- Entrega de hooks por `settings.json`; DoD por Stop hook (8 intentos + escala); **MCPs portables por el plugin — verificado en Malia que cargan**. Instalable: marketplace + 2 plugins.
 
-**Cableado, aún por rodar en real:**
-- `/workflow-plan` (planeación por hitos) + `/flujo-implement` (ejecución por hitos, Paso 2) + mode-guard; en dogfood en el proyecto Malia.
-- Etapas de test (unit/integración/BDD/E2E/mutación) vienen **apagadas** hasta conectar tus proyectos de test.
-- `docs-rewrite` está diseñado e implementado; falta rodaje sobre documentación real.
-- Pensado para **.NET** hoy; el motor es agnóstico, el stack se cambia.
+**Lo único que falta para 1.0 — el "verde real":**
+Un ciclo completo `plan → implement → pruebas → DoD` **en verde** en un proyecto real. Las etapas de test vienen **opt-in** hasta conectar tu proyecto de pruebas. El motor es **agnóstico**; el stack concreto se declara en `gauntlet.json` y en los stack-packs (dirección FrameworkHelping).
 
 ---
 
@@ -571,4 +569,4 @@ Diátaxis (Daniele Procida) · ADR/MADR (Michael Nygard + proyecto MADR) · C4 m
 
 ---
 
-**Flujo · v0.5.1** — el gate no es negociable, pero es honesto.
+**Flujo · v0.12.1** — el gate no es negociable, pero es honesto.
