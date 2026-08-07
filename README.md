@@ -23,7 +23,7 @@
 - [Arquitectura](#arquitectura)
 - [Herramientas incluidas y créditos](#herramientas-incluidas-y-créditos)
 - [Escape hatches y desactivación](#escape-hatches-y-desactivación)
-- [Estado del proyecto (v0.12.1)](#estado-del-proyecto-v0121)
+- [Estado del proyecto (v0.13.0)](#estado-del-proyecto-v0130)
 - [Troubleshooting](#troubleshooting)
 
 ---
@@ -35,23 +35,37 @@
 | Claude Code | Versión con soporte de plugins, hooks y skills (`/plugin`). |
 | PowerShell | **Windows PowerShell 5.1** basta (los hooks usan `powershell`, no `pwsh`). |
 | git | Para clonar/instalar desde el marketplace. |
-| .NET SDK | Solo para las etapas del guantelete (`dotnet build/format/test`). El motor funciona sin él; las etapas de test vienen apagadas hasta que las conectes. |
+| Runtime de tu stack | **.NET SDK** si instalas `flujo-dotnet`, **Node.js** si instalas `flujo-node`. El motor (`flujo-core`) no necesita ninguno de los dos — lee `gauntlet.json`, que lo aporta el pack de lenguaje que elijas. |
 
 ---
 
 ## Instalación
 
+Flujo son **4 plugins en 3 capas**: el motor (`flujo-core`, siempre) + **exactamente un pack de lenguaje** (`flujo-dotnet` o `flujo-node`, según tu proyecto) +, opcionalmente, un pack de framework encima del de lenguaje (`flujo-devexpress` sobre `flujo-dotnet`).
+
+```
+flujo-core (obligatorio)
+ ├─ flujo-dotnet  (si tu proyecto es .NET)
+ │   └─ flujo-devexpress  (opcional, solo si ademas usas DevExpress XAF/Blazor)
+ └─ flujo-node    (si tu proyecto es Node/TS — Vue, React, Tauri, backend puro)
+```
+
 ```bash
 # 1. Añadir el marketplace
 /plugin marketplace add MiguelRendon666/flujo-framework
 
-# 2. Instalar el motor (agnóstico) y el pack de stack
+# 2. Instalar el motor + tu pack de lenguaje (elige uno)
 /plugin install flujo-core@flujo
-/plugin install flujo-devexpress@flujo   # opcional: solo si trabajas DevExpress/XAF
+/plugin install flujo-dotnet@flujo       # proyecto .NET
+/plugin install flujo-devexpress@flujo   # opcional, solo si ademas usas DevExpress/XAF
+# — o, para un proyecto Node/TS (Vue, React, Tauri, backend puro) —
+/plugin install flujo-node@flujo
 
 # 3. Recargar
 /reload-plugins
 ```
+
+No instales `flujo-dotnet` y `flujo-node` a la vez salvo monorepo real con ambos stacks — `/flujo-init` avisa si detecta los dos.
 
 En la instalación, `flujo-core` te pedirá configuración (`userConfig`):
 
@@ -60,6 +74,8 @@ En la instalación, `flujo-core` te pedirá configuración (`userConfig`):
 | `db_connection` | Connection string de datos reales (solo lectura). Se guarda en el **keychain**, no en settings.json. | vacío |
 | `enable_context_budget_hook` | Reencamina lecturas/búsquedas amplias en el hilo principal (economía de tokens). | `false` |
 | `enable_persona` | Módulo de identidad del agente. | `false` |
+
+**Actualizar:** `/plugin marketplace update flujo` → `/reload-plugins` → `/flujo-sync` (reconcilia lo gestionado por el framework sin tocar tu contenido). Si vienes de antes de 0.13.0, instala el pack de lenguaje (paso 2) antes de sincronizar.
 
 ---
 
@@ -102,7 +118,7 @@ Converge: solo bloquea sobre fallos **locales y accionables**; a los **8 intento
 
 ### 2. Bloquea comentarios prohibidos antes de escribir
 
-Un **PreToolUse hook** escanea cada edición de código (`.cs .razor .css .scss .sql .ps1 .js .ts`). Si detecta un bloque multilínea, `//` consecutivos, separadores decorativos, `#region` o breadcrumbs de IA (`// Added for...`), **niega la escritura** y el agente reescribe sin el comentario. Tú no haces nada.
+Un **PreToolUse hook** escanea cada edición de código (extensiones de `flujo.json > codeExtensions`: el default universal `.css .scss .sql .ps1` + lo que anexa tu pack de lenguaje, ej. `.cs .razor` en dotnet o `.js .ts .vue` en node). Si detecta un bloque multilínea, `//` consecutivos, separadores decorativos, `#region` o breadcrumbs de IA (`// Added for...`), **niega la escritura** y el agente reescribe sin el comentario. Tú no haces nada.
 
 ### 3. Bloquea comandos destructivos
 
@@ -302,25 +318,26 @@ Además, la skill `flujo` se auto-invoca en tareas no triviales; no necesitas ll
 
 > **Guantelete** (calco de *gauntlet*) = la **cadena de verificaciones** que el código debe atravesar antes de darse por terminado. Se conserva `gauntlet` como identificador técnico (`gauntlet.json`, `/gauntlet`); en prosa, léelo como "cadena de verificaciones".
 
-Once etapas ordenadas por **costo/feedback** (lo barato primero, fail-fast). Definido en `gauntlet.json` de tu proyecto — el motor es agnóstico, los comandos son de tu stack:
+Once etapas ordenadas por **costo/feedback** (lo barato primero, fail-fast). Definido en `gauntlet.json` de tu proyecto — el motor es agnóstico, los comandos los aporta tu pack de lenguaje:
 
-| # | Etapa | Comando (default .NET) | Tier | Bloqueo |
-|---|---|---|---|---|
-| 1 | Build + warnings-as-errors | `dotnet build -warnaserror` | local + ci | duro |
-| 2 | Formato | `dotnet format --verify-no-changes` | local + ci | duro |
-| 3 | Comentarios prohibidos | script (hook) | local + ci | duro |
-| 4 | Análisis estático | `.editorconfig` severidad error | local + ci | duro |
-| 5 | Arquitectura | `dotnet test` (NetArchTest) | local + ci | duro |
-| 6 | Unit + cobertura | `dotnet test /p:CollectCoverage=true /p:Threshold=80` | local + ci | duro |
-| 7 | Integración | `dotnet test` | ci | duro |
-| 8 | BDD Gherkin | `dotnet test` (Reqnroll) | ci | duro |
-| 9 | E2E | `dotnet test` (Playwright) | ci | duro |
-| 10 | Mutation | `dotnet stryker` | nightly | informativo |
-| 11 | Doc drift + changelog | `docs-rewrite --check` | ci | blando |
+| # | Etapa | Comando (`flujo-dotnet`) | Comando (`flujo-node`) | Tier | Bloqueo |
+|---|---|---|---|---|---|
+| 1 | Build + warnings-as-errors | `dotnet build -warnaserror` | `npx tsc --noEmit` | local + ci | duro |
+| 2 | Formato | `dotnet format --verify-no-changes` | `npx prettier --check .` | local + ci | duro |
+| 3 | Comentarios prohibidos | script (hook) | script (hook) | local + ci | duro |
+| 4 | Análisis estático | `.editorconfig` severidad error | `.editorconfig` + lint | local + ci | duro |
+| 5 | Arquitectura | `dotnet test` (NetArchTest) — **off** hasta configurar | `dependency-cruiser` — **off** hasta configurar | local + ci | duro |
+| 6 | Unit + cobertura | `dotnet test /p:CollectCoverage=true /p:Threshold=80` | `npx vitest run --coverage` | local + ci | duro |
+| 7 | Integración | `dotnet test` — **off** hasta configurar | `npx vitest run tests/integration` — **off** hasta configurar | ci | duro |
+| 8 | BDD Gherkin | `dotnet test` (Reqnroll) | `npx cucumber-js` | ci | duro |
+| 9 | E2E | `dotnet test` (Playwright) — **off** hasta configurar | `npx playwright test` — **off** hasta configurar | ci | duro |
+| 10 | Mutation | `dotnet stryker` (Stryker.NET) | `npx stryker run` (StrykerJS) | local + ci | duro — **obligatorio** con `testing.enabled=true` |
+| 11 | Doc drift | script (hook, revisa `docs/_inbox/`) | script (hook, revisa `docs/_inbox/`) | ci | blando |
 
-- **local** (Stop hook): etapas 1-6, en segundos, sin infra.
-- **ci** (`quality-gate.yml`): completo en cada push.
-- **nightly** (cron): incluye la mutación (cara).
+Las etapas marcadas **off** vienen `enabled:false` en ambos packs por default — no es limitación de ningún stack, exigen infraestructura de pruebas (reglas de arquitectura, DB de integración, navegador) que ningún template puede asumir sin que la configures.
+
+- **local** (Stop hook): etapas 1-6 + 10 (si `testing.enabled`), en segundos.
+- **ci** (`quality-gate.yml`): 1-9 + 11, completo en cada push.
 
 Cada etapa es una entrada del manifiesto; activar/desactivar es un `"enabled": true|false`:
 
@@ -420,21 +437,22 @@ tu-repo/
 ├── specs/<feature>/
 │   ├── spec.md · plan.md · tasks.md
 │   └── <feature>.feature          # Gherkin (doc viva + BDD)
-├── gauntlet.json · dod.json
-├── stryker-config.json · .editorconfig
-└── .github/workflows/quality-gate.yml
+├── gauntlet.json · dod.json · flujo.json
+├── stryker-config.json · .editorconfig    # contenido segun tu pack de lenguaje
+└── .github/workflows/quality-gate.yml     # idem
 ```
 
 ---
 
 ## Arquitectura
 
-Dos plugins en un marketplace:
+Cuatro plugins en un marketplace, en **3 capas por stack**:
 
-- **flujo-core** — el motor, agnóstico de dominio. Skills (`flujo`, `brainstorming`, `ctx`, `arch`, `docs-rewrite`, `gauntlet`, `spec-new`, `adr-new`, `rules-comentarios`), agentes (`solid-guardian`, `design-critic`, `fresh-verifier`, `coder`), hooks + scripts, y las plantillas de proyecto.
-- **flujo-devexpress** — pack de stack DevExpress XAF/Blazor/XPO: skills por componente + `dxdocs`. Intercambiable por otro pack sin tocar el motor.
+- **flujo-core** — el motor, agnóstico de dominio Y de lenguaje. Skills (`flujo`, `brainstorming`, `ctx`, `arch`, `docs-rewrite`, `gauntlet`, `spec-new`, `adr-new`, `rules-comentarios`), agentes (`solid-guardian`, `design-critic`, `fresh-verifier`, `coder`), hooks + scripts, y las plantillas universales de proyecto (docs, specs, DoD). No trae `gauntlet.json` con comandos ni CI — eso es de la siguiente capa.
+- **flujo-dotnet / flujo-node** — pack de **lenguaje/runtime**: `gauntlet.json`, `ci/quality-gate.yml`, fragmento de `.editorconfig`, permisos de `Bash`, `stryker-config.json` (con el schema correcto de cada uno) y la lista de extensiones de código que leen los hooks. Se instala exactamente uno por proyecto.
+- **flujo-devexpress** — pack de **framework**, sobre `flujo-dotnet`: skills por componente DevExpress XAF/Blazor/XPO + `dxdocs`. Solo aporta skills — el gauntlet/CI ya los trae el pack de lenguaje. (A futuro: `flujo-vue`/`flujo-react` sobre `flujo-node`, mismo patrón.)
 
-Tres capas por **ubicación**: framework (plugin) · proyecto (`<repo>/.claude` + `docs/` + `specs/`, versionado) · desarrollador (`settings.local.json`, secretos). Enforcement determinista en hooks; guía en skills; el motor no sabe de tu stack (lee `gauntlet.json`).
+Además, 3 capas por **ubicación**: framework (plugin) · proyecto (`<repo>/.claude` + `docs/` + `specs/`, versionado) · desarrollador (`settings.local.json`, secretos). Enforcement determinista en hooks; guía en skills; el motor no sabe de tu stack (lee `gauntlet.json`, que lo escribió tu pack de lenguaje).
 
 ---
 
@@ -457,10 +475,9 @@ Flujo **orquesta** herramientas de terceros; **no reclama autoría de ninguna**.
 ### Skills incluidas
 
 - **Motor (`flujo-core`)** — de este framework: `flujo`, `brainstorming`, `ctx`, `arch`, `docs-rewrite`, `gauntlet`, `spec-new`, `adr-new`, `rules-comentarios`.
-- **Pack de stack (`flujo-devexpress`)** — **© DevExpress, skill pack oficial** (frontmatter `author: DevExpress`, v26.1; requiere licencia DevExpress para el producto):
+- **Pack de framework (`flujo-devexpress`)** — **© DevExpress, skill pack oficial** (frontmatter `author: DevExpress`, v26.1; requiere licencia DevExpress para el producto):
   - *Blazor*: `ai-chat`, `charts`, `combobox`, `gauges`, `grid`, `pivot-table`, `ribbon`, `scheduler`, `toolbar`, `treelist`.
   - *XAF*: `appearance`, `business-logic`, `business-logic-xpo`, `business-model`, `controllers`, `editors`, `filtering`, `filtering-xpo`, `performance`, `reports`, `security`, `validation`, `views`.
-  - `conexion-bases-datos` (ruteo del MCP de datos).
 
 ### Agentes y hooks
 
@@ -473,10 +490,10 @@ La metodología rinde más con estos, pero el plugin **no** los empaqueta:
 | Tool | Para qué | Proyecto / autor | Licencia |
 |---|---|---|---|
 | ponytail | Reto "senior perezoso" anti-sobreingeniería (MCP) | DietrichGebert — `DietrichGebert/ponytail` | MIT |
-| dbhub | SQL Server / MySQL / MariaDB / SQLite (lo usa `conexion-bases-datos`) | Bytebase — `bytebase/dbhub` | ver repo |
+| dbhub | MCP para SQL Server / MySQL / MariaDB / SQLite (config y ruteo son tuyos, per-proyecto) | Bytebase — `bytebase/dbhub` | ver repo |
 | Serena | Edición a nivel símbolo vía LSP (economía de tokens) | `oraios/serena` | ver repo |
 
-### Herramientas externas que invoca el guantelete (.NET)
+### Herramientas externas que invoca el guantelete (.NET, pack `flujo-dotnet`)
 
 No se empaquetan; el guantelete las llama por CLI si tu proyecto las tiene:
 
@@ -488,6 +505,20 @@ No se empaquetan; el guantelete las llama por CLI si tu proyecto las tiene:
 | BDD Gherkin | Reqnroll | reqnroll.net |
 | E2E | Playwright for .NET | Microsoft |
 | mutación | Stryker.NET | stryker-mutator.io |
+
+### Herramientas externas que invoca el guantelete (Node, pack `flujo-node`)
+
+No se empaquetan; el guantelete las llama por `npx` si tu proyecto las tiene:
+
+| Etapa | Herramienta | Proyecto |
+|---|---|---|
+| build | TypeScript (`tsc`) | Microsoft — `microsoft/TypeScript` |
+| format | Prettier | `prettier/prettier` |
+| arquitectura | dependency-cruiser | `sverweij/dependency-cruiser` |
+| unit + cobertura | Vitest (`--coverage`, provider v8) | `vitest-dev/vitest` |
+| BDD Gherkin | Cucumber.js | `cucumber/cucumber-js` |
+| E2E | Playwright | Microsoft — `microsoft/playwright` |
+| mutación | StrykerJS | stryker-mutator.io |
 
 ### Metodologías en las que se basa
 
@@ -516,6 +547,15 @@ Diátaxis (Daniele Procida) · ADR/MADR (Michael Nygard + proyecto MADR) · C4 m
 - Playwright for .NET — https://playwright.dev/dotnet
 - Stryker.NET — https://stryker-mutator.io
 
+**Herramientas del guantelete (Node)**
+- TypeScript — https://github.com/microsoft/TypeScript
+- Prettier — https://prettier.io
+- dependency-cruiser — https://github.com/sverweij/dependency-cruiser
+- Vitest — https://vitest.dev
+- Cucumber.js — https://github.com/cucumber/cucumber-js
+- Playwright — https://playwright.dev
+- StrykerJS — https://stryker-mutator.io
+
 **Metodologías y host**
 - Diátaxis — https://diataxis.fr
 - ADR / MADR — https://adr.github.io/madr
@@ -539,20 +579,21 @@ Diátaxis (Daniele Procida) · ADR/MADR (Michael Nygard + proyecto MADR) · C4 m
 
 ---
 
-## Estado del proyecto (v0.12.1)
+## Estado del proyecto (v0.13.0)
 
 **Beta pre-1.0 — los pilares están completos y publicados:**
 - **Planeación por hitos** (`/workflow-plan`) y **ejecución hito-por-hito** (`/flujo-implement`) con **mode-guard** (frontera dura planear/editar; el agente nunca implementa ni cambia de modo solo).
-- **Pruebas** como parte dura del guantelete (`test-gen` con filosofía adversarial + cobertura + **Stryker**), switch por instalación.
+- **Pruebas** como parte dura del guantelete (`test-gen` con filosofía adversarial + cobertura + **Stryker**, obligatorio y **multi-lenguaje** — Stryker.NET/StrykerJS), switch por instalación.
 - **Aceptación Gherkin** (`gherkin-gen` + `gherkin-check`); ejecución BDD opt-in.
 - **Estilos theme-first** (`theme-first` + `style-check`) con mini-gauntlet de token.
 - **Deuda técnica** (`tech-debt`, advisory) + ledger.
 - **Bootstrap greenfield** (`/flujo-new`) — crear un proyecto desde cero con flujo.
 - **Herramientas compañeras** (`/helpers`).
-- Entrega de hooks por `settings.json`; DoD por Stop hook (8 intentos + escala); **MCPs portables por el plugin — verificado en Malia que cargan**. Instalable: marketplace + 2 plugins.
+- **Separación real de stack (0.13.0):** `flujo-core` dejó de traer comandos `dotnet` quemados. Ahora son 4 plugins en 3 capas — motor agnóstico + pack de lenguaje (`flujo-dotnet`/`flujo-node`, elige exactamente uno) + pack de framework opcional encima (`flujo-devexpress`). `/flujo-init` detecta el pack instalado y arma `gauntlet.json`/CI/`.editorconfig`/permisos desde ahí; sin ninguno instalado, avisa en vez de asumir dotnet en silencio.
+- Entrega de hooks por `settings.json`; DoD por Stop hook (8 intentos + escala); **MCPs portables por el plugin — verificado en Malia que cargan**. Instalable: marketplace + 4 plugins.
 
 **Lo único que falta para 1.0 — el "verde real":**
-Un ciclo completo `plan → implement → pruebas → DoD` **en verde** en un proyecto real. Las etapas de test vienen **opt-in** hasta conectar tu proyecto de pruebas. El motor es **agnóstico**; el stack concreto se declara en `gauntlet.json` y en los stack-packs (dirección FrameworkHelping).
+Un ciclo completo `plan → implement → pruebas → DoD` **en verde** en un proyecto real, en ambos stacks (dotnet y node). Las etapas de test vienen **opt-in** hasta conectar tu proyecto de pruebas.
 
 ---
 
@@ -569,4 +610,4 @@ Un ciclo completo `plan → implement → pruebas → DoD` **en verde** en un pr
 
 ---
 
-**Flujo · v0.12.1** — el gate no es negociable, pero es honesto.
+**Flujo · v0.13.0** — el gate no es negociable, pero es honesto.

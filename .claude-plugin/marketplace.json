@@ -6,16 +6,32 @@
       "name": "flujo-core",
       "source": "./plugins/flujo-core",
       "description": "Motor agnostico: flujo de 9 fases, guantelete de calidad, Definition of Done por hooks, docs IA-friendly.",
-      "version": "0.12.1",
+      "version": "0.13.0",
       "category": "workflow",
+      "author": { "name": "Miguel Rendón" }
+    },
+    {
+      "name": "flujo-dotnet",
+      "source": "./plugins/flujo-dotnet",
+      "description": "Pack de lenguaje .NET: gauntlet, CI, editorconfig y permisos dotnet. Requerido por flujo-devexpress.",
+      "version": "0.1.0",
+      "category": "language-pack",
+      "author": { "name": "Miguel Rendón" }
+    },
+    {
+      "name": "flujo-node",
+      "source": "./plugins/flujo-node",
+      "description": "Pack de lenguaje Node/TS: gauntlet, CI, editorconfig y permisos npm/npx (Vitest, Prettier, Playwright, Stryker JS).",
+      "version": "0.1.0",
+      "category": "language-pack",
       "author": { "name": "Miguel Rendón" }
     },
     {
       "name": "flujo-devexpress",
       "source": "./plugins/flujo-devexpress",
-      "description": "Pack de stack DevExpress XAF/Blazor/XPO: skills por componente + ruteo de bases de datos + dxdocs.",
-      "version": "0.1.0",
-      "category": "stack",
+      "description": "Pack de framework DevExpress XAF/Blazor/XPO: skills por componente + dxdocs. Requiere flujo-dotnet.",
+      "version": "0.2.0",
+      "category": "framework-pack",
       "author": { "name": "Miguel Rendón" }
     }
   ]

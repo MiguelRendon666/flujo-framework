@@ -7,7 +7,7 @@ description: Dimensiona el contexto minimo necesario para una tarea antes de bus
 
 Antes de codear, analiza que informacion es realmente necesaria.
 
-1. **Archivos minimos necesarios**: los 3-5 mas relevantes con path exacto y las lineas a leer (`archivo.cs:50-120`), no el archivo completo.
+1. **Archivos minimos necesarios**: los 3-5 mas relevantes con path exacto y las lineas a leer (`archivo.ext:50-120`), no el archivo completo.
 2. **Preguntas clave a responder primero**: 2-3 cuya respuesta desbloquea la implementacion. Si `codebase-memory` esta disponible, respondelas con el grafo.
 3. **Lo que NO necesito ver**: enumera explicitamente lo excluible.
 4. **Dependencias ocultas**: con Serena/LSP (`find_referencing_symbols`) si esta, identifica que otro codigo usa las entidades involucradas.

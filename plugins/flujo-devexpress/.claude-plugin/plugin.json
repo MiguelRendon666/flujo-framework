@@ -1,10 +1,10 @@
 {
   "name": "flujo-devexpress",
   "displayName": "Flujo DevExpress",
-  "version": "0.1.0",
-  "description": "Pack de stack DevExpress XAF/Blazor/XPO: skills por componente, ruteo de bases de datos y documentacion dxdocs.",
+  "version": "0.2.0",
+  "description": "Pack de framework DevExpress XAF/Blazor/XPO: skills por componente y documentacion dxdocs. Requiere flujo-dotnet instalado (gauntlet/CI/editorconfig de .NET).",
   "author": { "name": "Miguel Rendón", "email": "mlopez@reyma.net" },
   "license": "MIT",
-  "keywords": ["devexpress", "xaf", "xpo", "blazor", "stack-pack"],
+  "keywords": ["devexpress", "xaf", "xpo", "blazor", "framework-pack"],
   "mcpServers": "./.mcp.json"
 }

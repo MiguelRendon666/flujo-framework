@@ -6,7 +6,18 @@ try { $j = $raw | ConvertFrom-Json } catch { exit 0 }
 $path = $j.tool_input.file_path
 if (-not $path) { exit 0 }
 $ext = [System.IO.Path]::GetExtension($path).ToLower()
-$codeExt = @('.cs', '.razor', '.css', '.scss', '.sql', '.ps1', '.js', '.ts')
+
+$proj = [string]$j.cwd
+if (-not $proj) { $proj = $env:CLAUDE_PROJECT_DIR }
+
+# extensiones de codigo desde flujo.json: default universal + lo que anexo el stack-pack en /flujo-init
+$codeExt = @('.css', '.scss', '.sql', '.ps1')
+if ($proj) {
+  try {
+    $fj = Get-Content (Join-Path $proj 'flujo.json') -Raw | ConvertFrom-Json
+    if ($fj.codeExtensions) { $codeExt = @($fj.codeExtensions) }
+  } catch {}
+}
 if ($codeExt -notcontains $ext) { exit 0 }
 
 $texts = @()

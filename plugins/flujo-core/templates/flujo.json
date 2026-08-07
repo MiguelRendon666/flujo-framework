@@ -1,4 +1,5 @@
 {
+  "codeExtensions": [".css", ".scss", ".sql", ".ps1"],
   "specGuard": {
     "enabled": true,
     "requirePaths": [],

@@ -28,8 +28,8 @@ Toma el **primer hito pendiente** del `plan.md`. Para ese hito:
    - Ultimo paso (doc-check) -> skill `docs-rewrite` sobre la doc del flujo afectado.
 3. **Corre el Guantelete del hito** tal como lo definio el plan:
    - Build/tests -> `gauntlet.ps1` (o los comandos especificos que liste ese hito).
-   - Auditoria Fase 6 -> agente `solid-guardian` sobre los `.cs` tocados.
-   - Auditoria Fase 7 -> agente `design-critic` si el hito toco UI (HTML/CSS/Razor).
+   - Auditoria Fase 6 -> agente `solid-guardian` sobre los archivos de codigo tocados.
+   - Auditoria Fase 7 -> agente `design-critic` si el hito toco UI/markup (HTML/CSS/Razor/JSX/Vue SFC, segun el stack).
    - Prioriza el bloqueo mas duro posible: si una etapa no pasa, el hito no avanza.
 4. **Reintentos:** si el guantelete falla, corrige y reintenta. Cuenta los intentos; el tope es `maxBlocks` de `dod.json` (8). Al agotarlo -> **handoff**: PARA y reporta el estado al usuario, no sigas.
 5. **Freno de mano:** si durante el hito detectas que el enfoque del plan esta mal (un hallazgo que lo invalida, no un bug puntual):

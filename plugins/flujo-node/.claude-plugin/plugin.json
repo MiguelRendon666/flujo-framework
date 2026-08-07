@@ -1,0 +1,9 @@
+{
+  "name": "flujo-node",
+  "displayName": "Flujo Node",
+  "version": "0.1.0",
+  "description": "Pack de lenguaje Node/TS: gauntlet, CI, editorconfig, permisos y snippet de CLAUDE.md para proyectos npm (JS/TS, Vue/React/Tauri sobre este pack).",
+  "author": { "name": "Miguel Rendón", "email": "mlopez@reyma.net" },
+  "license": "MIT",
+  "keywords": ["node", "javascript", "typescript", "stack-pack", "language-pack"]
+}

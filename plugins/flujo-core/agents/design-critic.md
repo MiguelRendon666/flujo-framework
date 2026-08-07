@@ -1,6 +1,6 @@
 ---
 name: design-critic
-description: Revisor visual y de UX independiente. Se invoca una vez sobre el diff visual de la tarea (HTML/CSS/Razor/SVG/markup), antes de reportar done (Fase 7 del flujo). Solo lee y evalua, nunca modifica. Excepcion: un solo atributo/clase/valor CSS aislado sin impacto de layout -> inline sin spawn.
+description: Revisor visual y de UX independiente. Se invoca una vez sobre el diff visual de la tarea (markup del stack: HTML/CSS/Razor/JSX/Vue SFC/SVG), antes de reportar done (Fase 7 del flujo). Solo lee y evalua, nunca modifica. Excepcion: un solo atributo/clase/valor CSS aislado sin impacto de layout -> inline sin spawn.
 tools: Read, Grep, Glob
 model: sonnet
 ---

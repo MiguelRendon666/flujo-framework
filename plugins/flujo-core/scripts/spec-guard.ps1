@@ -25,7 +25,8 @@ if ($nonEditing -contains $mode) {
     exit 0
   }
   $ext = [System.IO.Path]::GetExtension($file).ToLower()
-  $codeExt = @('.cs', '.razor', '.css', '.scss', '.js', '.ts', '.sql', '.csproj', '.props', '.targets')
+  $codeExt = @('.css', '.scss', '.sql', '.ps1')
+  try { if ($c0.codeExtensions) { $codeExt = @($c0.codeExtensions) } } catch {}
   if ($codeExt -contains $ext) {
     $r = "mode-guard: estas en modo '$mode' (NO-editable). No implementes por tu cuenta. Al terminar el plan, INDICA al usuario que ejecute /flujo-implement; al correrlo, el hook cambia el modo a implement y arranca la ejecucion hito por hito. Los .md/.feature del plan si se permiten."
     (@{ hookSpecificOutput = @{ hookEventName = 'PreToolUse'; permissionDecision = 'deny'; permissionDecisionReason = $r } } | ConvertTo-Json -Compress -Depth 5)

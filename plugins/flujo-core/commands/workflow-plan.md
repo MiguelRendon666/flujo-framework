@@ -14,7 +14,7 @@ Produce `specs/<feature>/{spec.md, design.md, plan.md}`. El corazon: **cada hito
 > **El comando es `/workflow-plan`, NO `/plan`.** `/plan` es el Plan Mode NATIVO de Claude Code y NO ejecuta esta gobernanza: su aprobacion de ExitPlanMode dice "you can now start coding" y eso NO es autorizacion dentro de flujo. Usa siempre `/workflow-plan`.
 
 ## FRONTERA DURA (mode-guard) — leelo primero
-`/workflow-plan` corre en **modo `plan` (NO-editable)**. El hook `readiness` fija `.claude/.task-mode=plan` y el `spec-guard` **NIEGA toda edicion de codigo** (`.cs/.razor/.css/.scss/.js/.ts/.sql/.csproj/.props/.targets`) mientras dure. **Tu unico entregable es documentacion** (`.md`/`.feature`): `spec.md`, `design.md`, `plan.md`, ADRs.
+`/workflow-plan` corre en **modo `plan` (NO-editable)**. El hook `readiness` fija `.claude/.task-mode=plan` y el `spec-guard` **NIEGA toda edicion de codigo** (extensiones de `flujo.json > codeExtensions`, pobladas por el stack-pack instalado) mientras dure. **Tu unico entregable es documentacion** (`.md`/`.feature`): `spec.md`, `design.md`, `plan.md`, ADRs.
 
 - **NUNCA implementes.** No escribas codigo, no despaches subagentes de implementacion (coder/A-malIA/etc.), no corras builds "para probar".
 - **NUNCA cambies el modo por tu cuenta.** El plan termina cuando el `plan.md` esta completo. Ahi **PARAS**.

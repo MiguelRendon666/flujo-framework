@@ -1,0 +1,9 @@
+{
+  "name": "flujo-dotnet",
+  "displayName": "Flujo .NET",
+  "version": "0.1.0",
+  "description": "Pack de lenguaje .NET: gauntlet, CI, editorconfig, permisos y snippet de CLAUDE.md para proyectos dotnet. flujo-devexpress lo asume instalado.",
+  "author": { "name": "Miguel Rendón", "email": "mlopez@reyma.net" },
+  "license": "MIT",
+  "keywords": ["dotnet", "csharp", "stack-pack", "language-pack"]
+}
